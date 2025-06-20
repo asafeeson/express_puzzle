@@ -1,15 +1,14 @@
 <script lang="ts">
 	import type { Snippet } from 'svelte';
-	import { fly } from 'svelte/transition';
+	import { fade, fly } from 'svelte/transition';
 	const pageTransitionDuration = 500;
 
-	let { children, url }: { children: Snippet; url: string } = $props();
+	let { children, url }: { children: Snippet; url: any } = $props();
 </script>
 
 {#key url}
 	<div
-		in:fly={{ x: -5, duration: pageTransitionDuration, delay: pageTransitionDuration }}
-		out:fly={{ x: 5, duration: pageTransitionDuration }}
+        transition:fade="{{delay: 250, duration: 300}}"
 	>
 		{@render children()}
 	</div>
