@@ -20,21 +20,21 @@
 		>
 			&lt;
 		</button>
-		<div class="flex justify-between w-full px-auto gap-4 px-4">
+		<div class="flex justify-between items-center w-full px-auto gap-4 px-4">
 			<img
-				src="/puzzle_element.svg"
+				src="/puzzle_filled_small.png"
 				alt=""
-				class="drop-shadow-[0_2px_4px_rgba(0,0,0,0.25)] w-[20%] opacity-40"
+				class="drop-shadow-[0_2px_4px_rgba(0,0,0,0.25)] h-[20%] w-[20%]  opacity-40"
 			/>
 			<img
-				src="/puzzle_element.svg"
+				src="/puzzle_filled_small.png"
 				alt=""
 				class="drop-shadow-[0_2px_4px_rgba(0,0,0,0.25)] w-[40%]"
 			/>
 			<img
-				src="/puzzle_element.svg"
+				src="/puzzle_filled_small.png"
 				alt=""
-				class="drop-shadow-[0_2px_4px_rgba(0,0,0,0.25)] w-[20%] opacity-40"
+				class="drop-shadow-[0_2px_4px_rgba(0,0,0,0.25)] h-[20%] w-[20%]  opacity-40"
 			/>
 		</div>
 		<button
