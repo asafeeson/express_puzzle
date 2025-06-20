@@ -25,7 +25,7 @@
 	</div>
 	<div class="flex flex-col justify-center items-center h-full gap-4">
 		<h1 class="font-black text-2xl">Поздравляем!</h1>
-		<p class="text-center">Мы убедились что вы не робот. Теперь сыграем по настоящему!</p>
+		<p class="text-center">Мы убедились что вы не робот. Теперь сыграем по-настоящему!</p>
 	</div>
 	<div class="flex h-full justify-between items-center">
 		<Button url="/game/second" name="ИГРАТЬ"></Button>
