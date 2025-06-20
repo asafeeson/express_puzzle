@@ -9,7 +9,7 @@
 	let showPop = $state(false);
 </script>
 
-<div class="flex flex-col h-dvh px-6 pb-[10%] gap-6 relative overflow-auto">
+<div class="flex flex-col h-full px-6 pb-[10%] gap-6 relative overflow-hidden">
 	<div
 		class="flex flex-col justify-center items-center bg-secondary rounded-b-4xl gap-6 w-full py-10"
 	>
