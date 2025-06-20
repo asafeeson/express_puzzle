@@ -9,8 +9,9 @@
 	<div
 		class="flex flex-col justify-center items-center bg-secondary rounded-b-4xl overflow-hidden p-4 gap-6 min-h-[471px]"
 	>
-		<div class="overflow-hidden rounded-2xl aspect-square">
-			<img src="/small_puzzle_image.png" alt="" class="h-full w-auto object-fill" />
+		<div class="overflow-hidden rounded-2xl aspect-square relative">
+			<img src="/small_puzzle_overlay.png" alt="" class="h-full w-auto object-fill z-1 top-0 left-0 mix-blend-color-burn opacity-100" />
+			<img src="/small_puzzle_image.png" alt="" class="h-full w-auto object-fill z-0 top-0 left-0" />
 		</div>
 		<p class="text-center text-xl">Собери элементы пазла</p>
 	</div>
@@ -24,7 +25,7 @@
 			<img
 				src="/puzzle_filled_small.png"
 				alt=""
-				class="drop-shadow-[0_2px_4px_rgba(0,0,0,0.25)] h-[20%] w-[20%]  opacity-40"
+				class="drop-shadow-[0_2px_4px_rgba(0,0,0,0.25)] h-[20%] w-[20%] opacity-40"
 			/>
 			<img
 				src="/puzzle_filled_small.png"
@@ -34,7 +35,7 @@
 			<img
 				src="/puzzle_filled_small.png"
 				alt=""
-				class="drop-shadow-[0_2px_4px_rgba(0,0,0,0.25)] h-[20%] w-[20%]  opacity-40"
+				class="drop-shadow-[0_2px_4px_rgba(0,0,0,0.25)] h-[20%] w-[20%] opacity-40"
 			/>
 		</div>
 		<button
