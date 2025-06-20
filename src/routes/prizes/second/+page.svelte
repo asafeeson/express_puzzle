@@ -9,9 +9,17 @@
 	<div
 		class="flex flex-col justify-center items-center bg-secondary rounded-b-4xl overflow-hidden gap-6 min-h-[471px] w-full"
 	>
-		<div class="overflow-hidden rounded-2xl aspect-square relative w-full gap-4">
-			<img src="/big_puzzle_overlay_black.png" alt="" class="h-full w-auto object-fill absolute z-1 opacity-100 mix-blend-difference" />
-            <img src="/big_puzzle_image.png" alt="" class="h-full w-auto object-fill absolute z-0 inset-0" />
+		<div class="overflow-hidden rounded-2xl aspect-square relative w-full gap-4 grid place-items-center">
+			<img
+				src="/big_puzzle_overlay_black.png"
+				alt=""
+				class="h-full w-auto object-fill absolute z-1 opacity-100 mix-blend-difference"
+			/>
+			<img
+				src="/big_puzzle_image.png"
+				alt=""
+				class="h-full w-auto object-fill absolute z-0"
+			/>
 		</div>
 		<p class="text-center text-xl">Собери элементы пазла</p>
 	</div>
