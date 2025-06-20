@@ -18,7 +18,7 @@
 		<button
 			class="flex items-center justify-center w-9 h-9 aspect-square rounded-full shadow-md convex-button"
 		>
-			b
+			&lt;
 		</button>
 		<div class="flex justify-between items-center w-full px-auto gap-4 px-4">
 			<img
@@ -34,13 +34,13 @@
 			<img
 				src="/puzzle_filled_big.png"
 				alt=""
-				class="drop-shadow-[0_2px_4px_rgba(0,0,0,0.25)] h-[20%] w-[20%]  opacity-40"
+				class="drop-shadow-[0_2px_4px_rgba(0,0,0,0.25)] h-[20%] w-[20%] opacity-40"
 			/>
 		</div>
 		<button
 			class="flex items-center justify-center w-9 h-9 aspect-square rounded-full shadow-md convex-button"
 		>
-			n
+			&gt;
 		</button>
 	</div>
 	<a class="uppercase text-center" href="/prizes/second">далее</a>
