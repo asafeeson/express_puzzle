@@ -10,7 +10,8 @@
 		class="flex flex-col justify-center items-center bg-secondary rounded-b-4xl overflow-hidden p-4 gap-6 min-h-[471px]"
 	>
 		<div class="overflow-hidden rounded-2xl aspect-square">
-			<img src="/small_puzzle_image.png" alt="" class="h-full w-auto object-fill" />
+
+			<img src="/big_puzzle_image.png" alt="" class="h-full w-auto object-fill" />
 		</div>
 		<p class="text-center text-xl">Собери элементы пазла</p>
 	</div>
@@ -43,7 +44,7 @@
 			n
 		</button>
 	</div>
-	<Button name="далее" url="/prizes/first"></Button>
+	<Button name="далее" url="/prizes/second"></Button>
 </div>
 
 <style>
