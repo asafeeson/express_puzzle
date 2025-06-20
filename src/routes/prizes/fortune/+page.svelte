@@ -1,11 +1,15 @@
 <script lang="ts">
 	import Button from '$lib/components/Button.svelte';
+	import { fly } from 'svelte/transition';
 	import type { PageData } from './$types';
+	import { quintOut } from 'svelte/easing';
 
 	const { data }: { data: PageData } = $props();
+	let wheel: HTMLElement;
+	let showPop = $state(false);
 </script>
 
-<div class="flex flex-col h-dvh px-6 pb-[10%] gap-6">
+<div class="flex flex-col h-dvh px-6 pb-[10%] gap-6 relative overflow-hidden">
 	<div
 		class="flex flex-col justify-center items-center bg-secondary rounded-b-4xl gap-6 w-full py-10"
 	>
@@ -26,23 +30,37 @@
 				alt=""
 				class="transition-transform duration-700 absolute -top-6 drop-shadow-2xl z-1"
 			/>
-
-			<button
-				type="button"
-				class="p-0 bg-transparent border-none outline-none"
-				onclick={() => {
-					const img = event.currentTarget.querySelector('img') as HTMLImageElement;
-					img.style.transform = 'rotate(360deg)';
-					setTimeout(() => {
-						img.style.transform = '';
-					}, 700);
-				}}
-			>
-				<img src="/fortune_wheel.svg" alt="" class="transition-transform duration-700" />
-			</button>
+			<img
+				src="/fortune_wheel.svg"
+				alt=""
+				class="transition-transform duration-700"
+				bind:this={wheel}
+			/>
 		</div>
 	</div>
 	<div class="flex justify-between items-end">
-		<Button url="#" name="КРУТИТЬ"></Button>
+		<button
+			type="button"
+			class="w-full h-16 bg-button grid place-content-center rounded-4xl uppercase font-bold text-2xl cursor-pointer"
+			onclick={() => {
+				wheel.style.transform = 'rotate(360deg)';
+				setTimeout(() => {
+					wheel.style.transform = '';
+				}, 700);
+				showPop = !showPop;
+			}}
+			>КРУТИТЬ
+		</button>
 	</div>
+	{#if showPop}
+		<div
+			class="w-full h-1/2 absolute bottom-0 left-0 px-4"
+			transition:fly={{ delay: 1400, duration: 400, x: 0, y: 400, opacity: 0.5, easing: quintOut }}
+		>
+			<div class="bg-secondary h-full w-full py-10 rounded-t-2xl opacity-80 justify-center items-center flex flex-col">
+				<h2 class="font-bold">Вы выиграли</h2>
+				<p>Описания приза</p>
+			</div>
+		</div>
+	{/if}
 </div>
