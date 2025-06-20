@@ -57,7 +57,7 @@
 			class="w-full h-1/2 absolute bottom-0 left-0 px-4"
 			transition:fly={{ delay: 1400, duration: 400, x: 0, y: 1000, opacity: 0.5, easing: quintOut }}
 		>
-			<div class="bg-secondary h-full w-full p-10 rounded-t-2xl opacity-90 justify-between items-center flex flex-col">
+			<div class="bg-secondary/90 h-full w-full p-10 rounded-t-2xl justify-between items-center flex flex-col">
 				<h2 class="font-bold">Вы выиграли</h2>
 				<p>Описания приза</p>
                 <Button url="/" name="забрать приз"></Button>
