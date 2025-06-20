@@ -5,22 +5,37 @@
 	const { data }: { data: PageData } = $props();
 </script>
 
-<div class="flex flex-col h-dvh px-6 pb-[10%]">
+<div class="flex flex-col h-dvh px-6 pb-[10%] gap-6">
 	<div
-		class="flex flex-col justify-center items-center bg-secondary rounded-b-4xl overflow-hidden gap-6 min-h-[471px] w-full"
+		class="flex flex-col justify-center items-center bg-secondary rounded-b-4xl gap-6 w-full py-12"
 	>
 		<div class="overflow-hidden rounded-full w-[92px] aspect-square gap-4 bg-[#D9D9D9]">
 			<img src="/user_icon.svg" alt="" class="h-full w-auto object-fill" />
 		</div>
-		<div class="space-y-4">
-			<span>Name user</span>
-			<span>Почта@mail.ru</span>
-			<span>Зарегистрирован дд.мм.гггг</span>
+		<div class="flex flex-col gap-2 items-center">
+			<span class="font-extrabold text-2xl">Name user</span>
+			<span class="text-sm">Почта@mail.ru</span>
+			<span class="text-sm">Зарегистрирован дд.мм.гггг</span>
 		</div>
 	</div>
 	<div class="flex flex-col justify-center items-center h-full gap-4">
-		<h1 class="font-black text-2xl">Поздравляем!</h1>
-		<p class="text-center">Вы выиграли! Чтобы забрать приз, войдите или зарегистрируйтесь</p>
+		<h1 class="font-black text-2xl">Выбрать приз</h1>
+		<div class="flex gap-4 w-full">
+			<a href="/" class="w-full flex flex-col justify-between items-center text-center">
+				<img src="/icon_money.png" alt="" class="h-[75px] aspect-square object-contain" />
+				<h2>Забрать приз 100 рублей</h2>
+				<p class="text-sm">
+					деньги будут зачислены на кошелек аккаунта или сразу переведуться по сбп
+				</p>
+			</a>
+			<a href="/" class="w-full flex flex-col justify-between px-6 text-center">
+				<img src="/icon_fortune.png" alt="" class="h-[75px] aspect-square object-contain" />
+				<div class="flex flex-col justify-between">
+					<h2>Сыграть в колесо фортуны</h2>
+					<p class="text-center text-sm">призы и промокоды</p>
+				</div>
+			</a>
+		</div>
 	</div>
 	<div class="flex h-full justify-between items-center">
 		<Button url="/prizes/choose" name="забрать приз"></Button>
