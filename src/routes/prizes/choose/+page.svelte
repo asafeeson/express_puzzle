@@ -23,7 +23,7 @@
 		<div class="flex gap-4 w-full">
 			<a
 				href="/"
-				class="w-full flex flex-1/2 flex-col px-2 py-10 items-center text-center gap-10 rounded-2xl bg-secondary"
+				class="w-full flex flex-1/2 flex-col px-2 py-10 items-center text-center gap-4 rounded-2xl bg-secondary hover:shadow-xl transition"
 			>
 				<img src="/icon_money.png" alt="" class="h-[75px] aspect-square object-contain" />
 				<div class="flex flex-col justify-between gap-4">
@@ -35,7 +35,7 @@
 			</a>
 			<a
 				href="/"
-				class="w-full flex flex-1/2 flex-col px-2 py-10 text-center gap-10 rounded-2xl bg-secondary"
+				class="w-full flex flex-1/2 flex-col px-2 py-10 text-center gap-4 rounded-2xl bg-secondary hover:shadow-xl transition"
 			>
 				<img src="/icon_fortune.png" alt="" class="h-[75px] aspect-square object-contain" />
 				<div class="flex flex-col h-full gap-4">
@@ -46,6 +46,6 @@
 		</div>
 	</div>
 	<div class="flex justify-between items-end">
-		<Button url="/prizes/choose" name="забрать приз"></Button>
+		<Button url="/prizes/fortune" name="забрать приз"></Button>
 	</div>
 </div>
