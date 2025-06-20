@@ -18,7 +18,7 @@
 		<button
 			class="flex items-center justify-center w-9 h-9 aspect-square rounded-full shadow-md convex-button"
 		>
-			b
+			&lt;
 		</button>
 		<div class="flex justify-between w-full px-auto gap-4 px-4">
 			<img
@@ -40,10 +40,10 @@
 		<button
 			class="flex items-center justify-center w-9 h-9 aspect-square rounded-full shadow-md convex-button"
 		>
-			n
+			&gt;
 		</button>
 	</div>
-	<Button name="далее" url="/prizes/first"></Button>
+	<a class="uppercase text-center" href="/prizes/first">далее</a>
 </div>
 
 <style>
