@@ -22,7 +22,7 @@
 		<h1 class="font-black text-2xl">Выбрать приз</h1>
 		<div class="flex gap-4 w-full">
 			<a
-				href="/"
+				href="/kefir"
 				class="w-full flex flex-1/2 flex-col px-2 py-10 items-center text-center gap-4 rounded-2xl bg-secondary hover:shadow-xl transition"
 			>
 				<img src="/icon_money.png" alt="" class="h-[75px] aspect-square object-contain" />
@@ -34,7 +34,7 @@
 				</div>
 			</a>
 			<a
-				href="/"
+				href="/prizes/fortune"
 				class="w-full flex flex-1/2 flex-col px-2 py-10 text-center gap-4 rounded-2xl bg-secondary hover:shadow-xl transition"
 			>
 				<img src="/icon_fortune.png" alt="" class="h-[75px] aspect-square object-contain" />
@@ -44,8 +44,5 @@
 				</div>
 			</a>
 		</div>
-	</div>
-	<div class="flex justify-between items-end">
-		<Button url="/prizes/fortune" name="забрать приз"></Button>
 	</div>
 </div>
