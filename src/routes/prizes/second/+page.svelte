@@ -7,7 +7,7 @@
 
 <div class="flex flex-col h-dvh px-6 pb-[10%]">
 	<div
-		class="flex flex-col justify-center items-center bg-secondary rounded-b-4xl overflow-hidden gap-6 min-h-[471px] w-full"
+		class="flex flex-col justify-center items-center bg-secondary rounded-b-4xl overflow-hidden gap-6 min-h-[471px] w-full py-6"
 	>
 		<div class="overflow-hidden rounded-2xl aspect-square relative w-full gap-4 grid place-items-center">
 			<img
