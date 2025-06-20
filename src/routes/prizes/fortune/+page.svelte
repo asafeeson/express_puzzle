@@ -9,9 +9,9 @@
 	let showPop = $state(false);
 </script>
 
-<div class="flex flex-col h-full px-6 pb-[10%] gap-6 relative overflow-hidden">
+<div class="flex flex-col h-full px-6 gap-6 relative overflow-hidden justify-between items-center">
 	<div
-		class="flex flex-col justify-center items-center bg-secondary rounded-b-4xl gap-6 w-full py-10"
+		class="flex flex-col justify-center items-center bg-secondary rounded-b-4xl gap-6 w-full py-6 h-fit"
 	>
 		<div class="overflow-hidden rounded-full w-[92px] aspect-square gap-4 bg-[#D9D9D9]">
 			<img src="/user_icon.svg" alt="" class="h-full w-auto object-fill" />
@@ -33,12 +33,12 @@
 			<img
 				src="/wheel.png"
 				alt=""
-				class="transition-transform duration-700"
+				class="transition-transform duration-700 h-[250px] w-auto"
 				bind:this={wheel}
 			/>
 		</div>
 	</div>
-	<div class="flex justify-between items-end">
+	<div class="flex justify-between items-end w-full">
 		<button
 			type="button"
 			class="w-full h-16 bg-button grid place-content-center rounded-4xl uppercase font-bold text-2xl cursor-pointer"
