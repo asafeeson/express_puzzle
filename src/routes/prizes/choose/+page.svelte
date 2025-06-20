@@ -20,24 +20,32 @@
 	</div>
 	<div class="flex flex-col justify-center items-center h-full gap-4">
 		<h1 class="font-black text-2xl">Выбрать приз</h1>
-		<div class="flex gap-4 w-full">
-			<a href="/" class="w-full flex flex-col justify-between items-center text-center">
+		<div class="flex gap-4 w-full h-full">
+			<a
+				href="/"
+				class="w-full flex flex-1/2 flex-col px-2 py-10 items-center text-center gap-10 rounded-2xl bg-secondary"
+			>
 				<img src="/icon_money.png" alt="" class="h-[75px] aspect-square object-contain" />
-				<h2>Забрать приз 100 рублей</h2>
-				<p class="text-sm">
-					деньги будут зачислены на кошелек аккаунта или сразу переведуться по сбп
-				</p>
+				<div class="flex flex-col justify-between gap-4">
+					<h2>Забрать приз 100 рублей</h2>
+					<p class="text-sm">
+						деньги будут зачислены на кошелек аккаунта или сразу переведуться по сбп
+					</p>
+				</div>
 			</a>
-			<a href="/" class="w-full flex flex-col justify-between px-6 text-center">
+			<a
+				href="/"
+				class="w-full flex flex-1/2 flex-col px-2 py-10 text-center gap-10 rounded-2xl bg-secondary"
+			>
 				<img src="/icon_fortune.png" alt="" class="h-[75px] aspect-square object-contain" />
-				<div class="flex flex-col justify-between">
+				<div class="flex flex-col h-full gap-4">
 					<h2>Сыграть в колесо фортуны</h2>
 					<p class="text-center text-sm">призы и промокоды</p>
 				</div>
 			</a>
 		</div>
 	</div>
-	<div class="flex h-full justify-between items-center">
+	<div class="flex justify-between items-end">
 		<Button url="/prizes/choose" name="забрать приз"></Button>
 	</div>
 </div>
