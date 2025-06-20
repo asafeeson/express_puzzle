@@ -9,7 +9,7 @@
 	let showPop = $state(false);
 </script>
 
-<div class="flex flex-col h-dvh px-6 pb-[10%] gap-6 relative overflow-hidden">
+<div class="flex flex-col h-dvh px-6 pb-[10%] gap-6 relative overflow-auto">
 	<div
 		class="flex flex-col justify-center items-center bg-secondary rounded-b-4xl gap-6 w-full py-10"
 	>
@@ -55,7 +55,7 @@
 	{#if showPop}
 		<div
 			class="w-full h-1/2 absolute bottom-0 left-0 px-4 z-2"
-			transition:fly={{ delay: 1400, duration: 400, x: 0, y: 1200, opacity: 0.5, easing: quintOut }}
+			transition:fly={{ delay: 1400, duration: 400, x: 0, y: 400, opacity: 0.5, easing: quintOut }}
 		>
 			<div
 				class="bg-secondary/90 h-full w-full p-10 rounded-t-2xl justify-between items-center flex flex-col"
