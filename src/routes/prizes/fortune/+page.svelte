@@ -26,12 +26,12 @@
 		<h1 class="font-black text-2xl">Нажми и крути</h1>
 		<div class="flex w-full justify-center items-center relative">
 			<img
-				src="/wheel_arrow.svg"
+				src="/arrow.png"
 				alt=""
-				class="transition-transform duration-700 absolute -top-6 drop-shadow-2xl z-1"
+				class="transition-transform duration-700 absolute -top-5 drop-shadow-xl z-1 h-10"
 			/>
 			<img
-				src="/fortune_wheel.svg"
+				src="/wheel.png"
 				alt=""
 				class="transition-transform duration-700"
 				bind:this={wheel}
@@ -54,7 +54,7 @@
 	</div>
 	{#if showPop}
 		<div
-			class="w-full h-1/2 absolute bottom-0 left-0 px-4"
+			class="w-full h-1/2 absolute bottom-0 left-0 px-4 z-2"
 			transition:fly={{ delay: 1400, duration: 400, x: 0, y: 1000, opacity: 0.5, easing: quintOut }}
 		>
 			<div
