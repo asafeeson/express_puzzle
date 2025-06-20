@@ -18,9 +18,15 @@
 			<span class="text-sm">Зарегистрирован дд.мм.гггг</span>
 		</div>
 	</div>
-	<div class="flex flex-col justify-center items-center h-full gap-4">
+	<div class="flex flex-col justify-center items-center h-full gap-6">
 		<h1 class="font-black text-2xl">Нажми и крути</h1>
-		<div class="flex w-full justify-center items-center">
+		<div class="flex w-full justify-center items-center relative">
+			<img
+				src="/wheel_arrow.svg"
+				alt=""
+				class="transition-transform duration-700 absolute -top-6 drop-shadow-2xl z-1"
+			/>
+
 			<button
 				type="button"
 				class="p-0 bg-transparent border-none outline-none"
@@ -32,7 +38,7 @@
 					}, 700);
 				}}
 			>
-				<img src="/fortune_wheel.svg" alt="" class="transition-transform duration-700"/>
+				<img src="/fortune_wheel.svg" alt="" class="transition-transform duration-700" />
 			</button>
 		</div>
 	</div>
