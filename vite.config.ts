@@ -2,10 +2,10 @@ import devtoolsJson from 'vite-plugin-devtools-json';
 import { sveltekit } from '@sveltejs/kit/vite';
 import { defineConfig } from 'vite';
 import tailwindcss from '@tailwindcss/vite';
-import {enhancedImages} from '@svelte/enhanced-img';
+import { enhancedImages } from '@sveltejs/enhanced-img';
 
 export default defineConfig({
-	plugins: [tailwindcss(), enhancedImages(), sveltekit(), devtoolsJson(), ],
+	plugins: [tailwindcss(), enhancedImages(), sveltekit(), devtoolsJson()],
 	test: {
 		projects: [
 			{
