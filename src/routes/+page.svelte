@@ -1,4 +1,7 @@
 <script lang="ts">
+	import Content from '$lib/components/Content.svelte';
+	import ImageContainer from '$lib/components/ImageContainer.svelte';
+	import TextStyle3D from '$lib/components/TextStyle3D.svelte';
 	import Button from '../lib/components/Button.svelte';
 
 	import type { PageData } from './$types';
@@ -6,17 +9,18 @@
 	const { data }: { data: PageData } = $props();
 </script>
 
-<div class="grid grid-rows-[5fr_1fr_1fr] h-dvh px-6 pb-[10%]">
-	<div class="grid place-content-center rounded-b-4xl overflow-hidden p-4 gap-6">
+<Content>
+	<ImageContainer>
 		<div class="overflow-hidden rounded-2xl aspect-square">
 			<video autoplay loop muted playsinline>
-				<source src="/pengu.mp4" type="video/mp4" />
+				<source src="/intro-animation.webm" type="video/webm" />
+				<source src="/intro-animation.mp4" type="video/mp4" />
 				Ваш браузер не поддерживает видео.
 			</video>
 		</div>
-	</div>
-	<h1 class="text-2xl max-w-2/3 mx-auto text-center self-center">Собирай пазлы и зарабатывай</h1>
-	<div class="self-end">
-		<Button url="game/first" name="играть"></Button>
-	</div>
-</div>
+	</ImageContainer>
+	<h1 class="mx-auto text-center self-center">
+		<TextStyle3D>СОБЕРИ ЭЛЕМЕНТЫ ПАЗЛА</TextStyle3D>
+	</h1>
+	<Button url="game/first" name="играть"></Button>
+</Content>

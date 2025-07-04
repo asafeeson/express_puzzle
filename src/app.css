@@ -1,18 +1,25 @@
+@import url('https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@400;500;700;800;900&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
-@import "tailwindcss";
+@font-face {
+	font-family: 'Baloo Cyrillic';
+	src: url('/static/baloo-cyrillic.ttf') format('truetype');
+}
+
+@import 'tailwindcss';
 
 @theme {
-    --default-font-family: "Inter", sans-serif;
-    --font-opsz: auto;
-    --color-main: #F8D8B5;
-    --color-secondary: #EDC5A0;
-    --color-button: #FA9047;
-
+	--default-font-family: 'M PLUS Rounded 1c', sans-serif;
+    --font-baloo: 'Baloo Cyrillic', sans-serif;
+	--font-opsz: auto;
+	--color-main: #FDF6ED;
+	--color-secondary: #FBE3C3;
+	--color-button: #f88c41;
 }
 @layer {
-    body {
-        @apply h-screen;
-        @apply bg-main;
-    }
-     
+	body {
+		@apply h-screen;
+		@apply bg-main;
+		@apply font-normal;
+		font-style: normal;
+	}
 }

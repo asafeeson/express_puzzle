@@ -1,5 +1,5 @@
 <script lang="ts">
-	import Button from '$lib/components/Button.svelte';
+	import RoundButton from '$lib/components/RoundButton.svelte';
 	import type { PageData } from './$types';
 
 	const { data }: { data: PageData } = $props();
@@ -22,11 +22,7 @@
 		<p class="text-center text-xl">Собери элементы пазла</p>
 	</div>
 	<div class="flex h-full justify-between items-center">
-		<button
-			class="flex items-center justify-center w-9 h-9 aspect-square rounded-full shadow-md convex-button"
-		>
-			&lt;
-		</button>
+		<RoundButton flipY></RoundButton>
 		<div class="flex justify-between items-center w-full px-auto gap-4 px-4">
 			<img
 				src="/puzzle_filled_small.png"
@@ -44,32 +40,7 @@
 				class="drop-shadow-[0_2px_4px_rgba(0,0,0,0.25)] h-[20%] w-[20%] opacity-40"
 			/>
 		</div>
-		<button
-			class="flex items-center justify-center w-9 h-9 aspect-square rounded-full shadow-md convex-button"
-		>
-			&gt;
-		</button>
+		<RoundButton></RoundButton>
 	</div>
 	<a class="uppercase text-center" href="/prizes/first">далее</a>
 </div>
-
-<style>
-	.convex-button {
-		/* Basic button dimensions and shape */
-		border-width: 1px;
-		border-color: #c27535;
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		border-radius: 50%; /* Makes it perfectly circular */
-		cursor: pointer;
-		outline: none; /* Remove outline on focus */
-
-		/* Convex 3D effect using gradients */
-		background: linear-gradient(145deg, var(--color-main), var(--color-button));
-		box-shadow: -5px 5px 10px rgba(0, 0, 0, 0.3);
-
-		color: #000; /* Darker color for the icon/text */
-		transition: all 0.2s ease-in-out; /* Smooth transitions for hover/active states */
-	}
-</style>

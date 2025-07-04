@@ -7,7 +7,7 @@
 </script>
 
 {#key page.url}
-	<main transition:fade={{ delay: 250, duration: 300 }}>
+	<main transition:fade={{ delay: 250, duration: 300 }} class="max-w-md mx-auto h-dvh flex flex-col justify-center items-center">
 		{@render children()}
 	</main>
 {/key}
