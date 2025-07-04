@@ -20,7 +20,7 @@
 		</div>
 	</ImageContainer>
 	<h1 class="mx-auto text-center self-center">
-		<TextStyle3D>СОБЕРИ ЭЛЕМЕНТЫ ПАЗЛА</TextStyle3D>
+		<TextStyle3D className={'text-4xl'}>СОБЕРИ ЭЛЕМЕНТЫ ПАЗЛА</TextStyle3D>
 	</h1>
-	<Button url="game/first" name="играть"></Button>
+	<Button href="game/first" title="играть">играть</Button>
 </Content>

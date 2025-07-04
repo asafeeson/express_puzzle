@@ -62,7 +62,7 @@
 			>
 				<h2 class="font-bold">Вы выиграли</h2>
 				<p>Описания приза</p>
-				<Button url="/kefir" name="забрать приз"></Button>
+				<Button href="/kefir" title="забрать приз">забрать приз</Button>
 			</div>
 		</div>
 	{/if}

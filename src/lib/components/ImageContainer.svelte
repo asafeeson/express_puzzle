@@ -4,6 +4,18 @@
 	let { children }: { children: Snippet } = $props();
 </script>
 
-<div class="grid place-content-center rounded-b-4xl overflow-hidden px-2 pt-10 pb-2 gap-6 bg-secondary">
+<div
+	class="h-fit rounded-b-2xl overflow-hidden w-full px-2 pt-10 pb-2 gap-6 bg-secondary layer-shadow flex flex-col justify-center items-center"
+>
 	{@render children()}
 </div>
+
+<style>
+	@layer components {
+		.layer-shadow {
+			box-shadow:
+				-9px 7px 4.9px rgba(0, 0, 0, 0.05),
+				inset -2px -3px 1.2px rgba(255, 255, 255, 0.25);
+		}
+	}
+</style>

@@ -1,23 +1,11 @@
 <script lang="ts">
 	import type { Snippet } from 'svelte';
 
-	let { children }: { children: Snippet } = $props();
+	let { children, className }: { children: Snippet; className?: String } = $props();
 </script>
 
-<span class="ddd-text w-full">
+<span
+	class="font-baloo font-black text-center uppercase text-sweet-orange text-shadow-[1px_2px_4.5px_rgba(0,0,0,0.25)] {className}"
+>
 	{@render children()}
 </span>
-
-<span></span>
-
-<style>
-	.ddd-text {
-		font-family: 'Baloo Cyrilic', sans-serif;
-		font-size: 36px;
-		font-weight: 900;
-		line-height: 93%;
-		text-align: center;
-		color: #ff6f00;
-		text-shadow: 1px 2px 4.5px rgba(0, 0, 0, 0.25);
-	}
-</style>

@@ -1,12 +1,11 @@
 <script lang="ts">
 	import type { Snippet } from 'svelte';
-	import ArrowRight from './ArrowRight.svelte';
 
-	let { flipY = false }: { flipY?: boolean } = $props();
+	let { children, ...rest }: { flipY?: boolean; children: Snippet } = $props();
 </script>
 
-<button class="rnd-button">
-	<ArrowRight class={`w-full h-full ${flipY ? 'rotate-180' : ''}`}></ArrowRight>
+<button class="rnd-button" {...rest}>
+	{@render children()}
 </button>
 
 <style>
@@ -17,8 +16,8 @@
 		align-items: center;
 		border-radius: 100%;
 		aspect-ratio: 1/1;
-		/* width: 48px;
-		height: 48px; */
+		width: 63px;
+		height: 63px;
 		background: #f88c41;
 		box-shadow:
 			0px 4px 15px rgba(0, 0, 0, 0.15),

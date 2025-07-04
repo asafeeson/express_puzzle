@@ -1,13 +1,16 @@
 <script lang="ts">
+	import type { Snippet } from 'svelte';
+
 	interface Props {
-		name: string;
-		url: string;
+		children: Snippet;
+		title: string;
+		href: string;
 	}
-	const { name, url }: Props = $props();
+	const { children, href, title }: Props = $props();
 </script>
 
-<a href={url} title={name} aria-label={name} class="ddd-button">
-	{name}
+<a {href} {title} aria-label={title} class="ddd-button">
+	{@render children()}
 </a>
 
 <style>
@@ -27,15 +30,16 @@
 			inset 0px 4px 4px rgba(255, 255, 255, 0.35);
 		border-radius: 35px;
 
-		font-family: 'Baloo Cyrilic', sans-serif;
+		font-family: 'Baloo Cyrillic', sans-serif;
 		font-style: normal;
 		font-weight: 900;
 		font-size: 30px;
 		line-height: 47px;
 		text-align: center;
 		text-transform: uppercase;
-		color: #FFFFFF;
-		text-shadow: -1px 1px 1.6px rgba(0, 0, 0, 0.25), 1px 2px 4.5px rgba(0, 0, 0, 0.25);
-		
+		color: #ffffff;
+		text-shadow:
+			-1px 1px 1.6px rgba(0, 0, 0, 0.25),
+			1px 2px 4.5px rgba(0, 0, 0, 0.25);
 	}
 </style>

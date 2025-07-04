@@ -10,6 +10,7 @@
 	import { quintOut } from 'svelte/easing';
 	import { onMount } from 'svelte';
 	import PuzzleBoard from '$lib/components/PuzzleBoard.svelte';
+	import PieceTray from '$lib/components/PieceTray.svelte';
 
 	const { data }: { data: PageData } = $props();
 	interface PuzzlePieceType {
@@ -27,7 +28,7 @@
 		const maxLen = puzzleElements.length;
 		console.log(maxLen);
 		if (index < maxLen) activePuzzleElement++;
-		if (index === maxLen) activePuzzleElement = 0;
+		if (index === maxLen) activePuzzleElement--;
 		console.log(activePuzzleElement);
 	}
 	function getPrevPuzzle(index: number) {
@@ -36,19 +37,8 @@
 		console.log(activePuzzleElement);
 	}
 
-	let placedPieces = $state<(PuzzlePieceType | null)[]>(Array(4).fill(null));
-
-	function handlePieceDrop(dropZoneId: number, pieceId: number) {
-		const pieceToPlace = puzzleElements.find((p) => p.id === pieceId);
-		if (pieceToPlace) {
-			placedPieces[dropZoneId] = pieceToPlace;
-			// Optionally remove from the tray if you implement a tray
-			console.log(`Piece ${pieceId} dropped into zone ${dropZoneId}`);
-		}
-	}
-
-	let activePuzzleElement = $state<number>(0);
-	let selectedPuzzleElement = $derived<string>(puzzleElements[activePuzzleElement].imageSrc);
+	let activePuzzleElement = $state<number>(3);
+	let selectedPuzzleElement = $derived<string>(puzzleElements[activePuzzleElement].src);
 	let buttonElement = $state<HTMLButtonElement>();
 
 	let isDragging = $state<boolean>(false);
@@ -196,47 +186,11 @@
 	let puzzleContainer = $state();
 </script>
 
-<div bind:this={contentCotainer}>
-	<Content>
-		<div bind:this={puzzleContainer}>
-			<ImageContainer>
-				<PuzzleBoard
-					gridSize={puzzleElements.length}
-					pieces={puzzleElements}
-					onDrop={handlePieceDrop}
-				></PuzzleBoard>
-				<p class="text-center">
-					<TextStyle3D className={'text-2xl'}>Собери элементы пазла</TextStyle3D>
-				</p>
-			</ImageContainer>
-		</div>
-		<div class="flex justify-between items-center w-full h-28">
-			<RoundButton onclick={() => getPrevPuzzle(activePuzzleElement)}><ArrowLeft /></RoundButton>
-			<div class="flex justify-center items-center w-full grow">
-				{#key activePuzzleElement}
-					<button
-						bind:this={buttonElement}
-						class="draggable-button"
-						class:dragging={isDragging}
-						onmousedown={handlePointerDown}
-						ontouchstart={handlePointerDown}
-						onclick={handleButtonClick}
-					>
-						<img
-							src={selectedPuzzleElement}
-							alt=""
-							class="drop-shadow-[0_2px_4px_rgba(0,0,0,0.25)] h-[106px]"
-							transition:slide={{ delay: 250, duration: 300, easing: quintOut }}
-						/>
-					</button>
-				{/key}
-			</div>
-			<RoundButton onclick={() => getNextPuzzle(activePuzzleElement)}><ArrowRight /></RoundButton>
-		</div>
-		<button class="reset-button" onclick={resetPosition}> Сбросить позицию </button>
-		<a class="uppercase text-center" href="/prizes/first">далее</a>
-	</Content>
-</div>
+<Content bind:this={contentCotainer}>
+	<PuzzleBoard gridSize={4} pieces={puzzleElements} onDrop={() => console.log('dropped')}
+	></PuzzleBoard>
+	<PieceTray pieces={puzzleElements}></PieceTray>
+</Content>
 
 <style>
 	.draggable-button {

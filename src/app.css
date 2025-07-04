@@ -2,18 +2,20 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
 @font-face {
 	font-family: 'Baloo Cyrillic';
-	src: url('/static/baloo-cyrillic.ttf') format('truetype');
+	src: url('/baloo-cyrillic.ttf') format('truetype');
 }
 
 @import 'tailwindcss';
 
 @theme {
 	--default-font-family: 'M PLUS Rounded 1c', sans-serif;
-    --font-baloo: 'Baloo Cyrillic', sans-serif;
+	--font-baloo: 'Baloo Cyrillic', sans-serif;
 	--font-opsz: auto;
-	--color-main: #FDF6ED;
-	--color-secondary: #FBE3C3;
+	--color-main: #fdf6ed;
+	--color-secondary: #fbe3c3;
 	--color-button: #f88c41;
+	--color-sweet-orange: #ff6f00;
+	--color-puzzle-bg: #711e02;
 }
 @layer {
 	body {

@@ -1,5 +1,4 @@
 <script lang="ts">
-	import Button from '$lib/components/Button.svelte';
 	import { fade } from 'svelte/transition';
 	import type { PageData } from './$types';
 
