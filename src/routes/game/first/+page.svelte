@@ -26,13 +26,19 @@
 	function getNextPuzzle(index: number) {
 		const maxLen = puzzleElements.length;
 		console.log(maxLen);
-		if (index < maxLen) activePuzzleElement++;
-		if (index === maxLen) activePuzzleElement = 0;
+		if (index === maxLen - 1) {
+			activePuzzleElement = 0;
+		} else {
+			activePuzzleElement++;
+		}
 		console.log(activePuzzleElement);
 	}
 	function getPrevPuzzle(index: number) {
-		if (index > 0) activePuzzleElement--;
-		if (index === 0) activePuzzleElement++;
+		if (index === 1) {
+			activePuzzleElement = puzzleElements.length;
+		} else {
+			activePuzzleElement--;
+		}
 		console.log(activePuzzleElement);
 	}
 
