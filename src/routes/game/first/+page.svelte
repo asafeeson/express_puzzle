@@ -184,9 +184,10 @@
 		}, 400);
 	}
 
-	function handleDragStart(e: DragEvent) {
+	function handleDragStart(e: DragEvent, pieceId: number) {
+		console.log(e.currentTarget);
 		if (e.dataTransfer && e.currentTarget instanceof HTMLElement) {
-			e.dataTransfer.setData('pieceId', piece.id.toString());
+			e.dataTransfer.setData('pieceId', pieceId.toString());
 			e.currentTarget.style.opacity = '0.5';
 		}
 	}
@@ -196,14 +197,6 @@
 			console.log('Кнопка нажата!');
 		}
 	}
-
-	// Функция для сброса позиции (для тестирования)
-	function resetPosition() {
-		returnToOriginalPosition();
-	}
-
-	let isSlideLeft = $state<boolean>(true);
-	let isSlideRight = $state<boolean>(true);
 </script>
 
 <div bind:this={contentCotainer}>
@@ -228,10 +221,10 @@
 						bind:this={buttonElement}
 						class="draggable-button h-[106px] slide-in-left"
 						class:dragging={isDragging}
-						onmousedown={handlePointerDown}
-						ontouchstart={handlePointerDown}
+						onmousedown={(e) => handlePointerDown(e)}
+						ontouchstart={(e) => handlePointerDown(e)}
 						onclick={handleButtonClick}
-						ondragstart={handleDragStart}
+						ondragstart={(e) => handleDragStart(e, activePuzzleElement)}
 					>
 						<img
 							src={selectedPuzzleElement}
@@ -252,13 +245,19 @@
 	.draggable-button {
 		position: absolute; /* ОБЯЗАТЕЛЬНО - позволяет позиционировать через left/top */
 		touch-action: none; /* Отключает стандартные тач-жесты браузера */
-		user-select: none; /* Предотвращает выделение текста при перетаскивании */
 		cursor: move; /* Показывает, что элемент можно перетаскивать */
 		z-index: 10; /* Гарантирует, что кнопка над другими элементами */
 		-webkit-touch-callout: none; /* Отключает контекстное меню на iOS */
-		-webkit-user-select: none; /* Дополнительная защита от выделения на iOS */
+		/* Предотвращает выделение текста в разных браузерах */
+		-webkit-user-select: none; /* Chrome, Safari, Opera */
+		-moz-user-select: none; /* Firefox */
+		-ms-user-select: none; /* Internet Explorer/Edge */
+		user-select: none; /* Standard syntax */
 	}
 	.draggable-button.dragging {
+		/* Добавляем префиксы для transform для лучшей совместимости */
+		-webkit-transform: scale(1.05);
+		-ms-transform: scale(1.05); /* Для IE 9 */
 		transform: scale(1.05);
 		filter: drop-shadow(8px 16px 10px rgba(0, 0, 0, 0.3));
 		-webkit-filter: drop-shadow(8px 16px 10px rgba(0, 0, 0, 0.3));
