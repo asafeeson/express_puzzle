@@ -184,7 +184,7 @@
 		}, 400);
 	}
 
-	function handleDragStart(e: DragEvent, piece: PuzzlePieceType) {
+	function handleDragStart(e: DragEvent) {
 		if (e.dataTransfer && e.currentTarget instanceof HTMLElement) {
 			e.dataTransfer.setData('pieceId', piece.id.toString());
 			e.currentTarget.style.opacity = '0.5';
@@ -201,6 +201,9 @@
 	function resetPosition() {
 		returnToOriginalPosition();
 	}
+
+	let isSlideLeft = $state<boolean>(true);
+	let isSlideRight = $state<boolean>(true);
 </script>
 
 <div bind:this={contentCotainer}>
@@ -217,19 +220,18 @@
 				</p>
 			</ImageContainer>
 		</div>
-		<div class="flex justify-between items-center w-full h-28">
+		<div class="flex justify-between items-center w-full h-full">
 			<RoundButton onclick={() => getPrevPuzzle(activePuzzleElement)}><ArrowLeft /></RoundButton>
-			<div class="flex justify-center items-center w-full grow">
+			<div class="flex justify-center items-center w-full grow overflow-hidden">
 				{#key activePuzzleElement}
 					<button
 						bind:this={buttonElement}
-						class="draggable-button h-[106px]"
+						class="draggable-button h-[106px] slide-in-left"
 						class:dragging={isDragging}
 						onmousedown={handlePointerDown}
 						ontouchstart={handlePointerDown}
 						onclick={handleButtonClick}
 						ondragstart={handleDragStart}
-						transition:slide={{ delay: 250, duration: 300, axis: 'x', easing: quintOut }}
 					>
 						<img
 							src={selectedPuzzleElement}
@@ -241,8 +243,8 @@
 			</div>
 			<RoundButton onclick={() => getNextPuzzle(activePuzzleElement)}><ArrowRight /></RoundButton>
 		</div>
-		<button class="reset-button" onclick={resetPosition}>Сбросить позицию</button>
-		<a class="uppercase text-center" href="/prizes/first">далее</a>
+		<!-- <button class="reset-button" onclick={resetPosition}>Сбросить позицию</button> -->
+		<!-- <a class="uppercase text-center" href="/prizes/first">далее</a> -->
 	</Content>
 </div>
 
@@ -261,5 +263,35 @@
 		filter: drop-shadow(8px 16px 10px rgba(0, 0, 0, 0.3));
 		-webkit-filter: drop-shadow(8px 16px 10px rgba(0, 0, 0, 0.3));
 		cursor: grabbing;
+	}
+
+	.slide-in-left {
+		-webkit-animation: slide-in-left 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
+		animation: slide-in-left 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
+	}
+
+	@-webkit-keyframes slide-in-left {
+		0% {
+			-webkit-transform: translateX(-1000px);
+			transform: translateX(-1000px);
+			opacity: 0;
+		}
+		100% {
+			-webkit-transform: translateX(0);
+			transform: translateX(0);
+			opacity: 1;
+		}
+	}
+	@keyframes slide-in-left {
+		0% {
+			-webkit-transform: translateX(-1000px);
+			transform: translateX(-1000px);
+			opacity: 0;
+		}
+		100% {
+			-webkit-transform: translateX(0);
+			transform: translateX(0);
+			opacity: 1;
+		}
 	}
 </style>
