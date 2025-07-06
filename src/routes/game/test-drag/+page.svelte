@@ -62,6 +62,8 @@
 	function handlePointerDown(e) {
 		isDragging = true;
 
+		const target = e.target.classList.add('dragging');
+
 		puzzleElements[activePuzzleElement].isDragging = isDragging;
 		// Получаем координаты для мыши и тач-событий
 		const clientX = e.clientX || (e.touches && e.touches[0].clientX);
@@ -119,9 +121,10 @@
 		buttonElement.style.top = `${currentY}px`;
 	}
 
-	function handlePointerUp() {
+	function handlePointerUp(e) {
 		isDragging = false;
 		puzzleElements[activePuzzleElement].isDragging = isDragging;
+		const target = e.target.classList.remove('dragging');
 
 		// Получаем координаты puzzle контейнера
 		const puzzleRect = puzzleContainer.getBoundingClientRect();
@@ -138,10 +141,10 @@
 			// Элемент попал в разрешенную зону - можно оставить его там
 			console.log('Элемент размещен в puzzle зоне!');
 			// Можно добавить дополнительную логику для "защелкивания"
-			const placedPieceId = puzzleElements[activePuzzleElement].id;
+			// const placedPieceId = puzzleElements[activePuzzleElement].id;
 			// handlePieceDrop(0, placedPieceId); // Assuming dropZoneId 0 for now
 			// Удаляем элемент из списка puzzleElements
-			puzzleElements.splice(activePuzzleElement, 1);
+			// puzzleElements.splice(activePuzzleElement, 1);
 			// Если список не пуст, корректируем activePuzzleElement
 			if (puzzleElements.length > 0) {
 				activePuzzleElement = Math.min(activePuzzleElement, puzzleElements.length - 1);
@@ -279,13 +282,13 @@
 		-ms-user-select: none; /* Internet Explorer/Edge */
 		user-select: none; /* Standard syntax */
 	}
-	.draggable-button.dragging {
+	.dragging {
 		/* Добавляем префиксы для transform для лучшей совместимости */
 		-webkit-transform: scale(1.05);
 		-ms-transform: scale(1.05); /* Для IE 9 */
 		transform: scale(1.05);
-		filter: drop-shadow(8px 16px 10px rgba(0, 0, 0, 0.3));
 		-webkit-filter: drop-shadow(8px 16px 10px rgba(0, 0, 0, 0.3));
+		filter: drop-shadow(8px 16px 10px rgba(0, 0, 0, 0.3));
 		cursor: grabbing;
 	}
 

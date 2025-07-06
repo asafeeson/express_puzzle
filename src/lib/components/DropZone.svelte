@@ -27,7 +27,7 @@
 	tabindex="0"
 	ondragover={handleDragOver}
 	ondrop={handleDrop}
-	class="rounded-lg aspect-square transition-colors duration-300 "
+	class="rounded-lg aspect-square transition-colors duration-300"
 >
 	{@render children?.()}
 </div>

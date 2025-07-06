@@ -7,7 +7,8 @@
 		height?: string;
 		id?: string;
 		svgEl?: any;
-		imageHref?: string; // add image source prop
+		imageHref?: string;
+		onDrop: (id: number, pieceId: number) => void;
 	}
 	let {
 		width = '440',
@@ -15,6 +16,7 @@
 		id,
 		svgEl = $bindable(),
 		imageHref = '',
+		onDrop,
 		...rest
 	}: Props = $props();
 
@@ -37,6 +39,17 @@
 		}
 	];
 
+	function handleDrop(e: DragEvent): void {
+		console.log('handleDrop event catched on svg');
+		const target = e.target as HTMLElement;
+		console.log('Drop target', target);
+		e.preventDefault();
+		const pieceId = e.dataTransfer?.getData('pieceId');
+		if (pieceId) {
+			onDrop(id, parseInt(pieceId, 10));
+		}
+	}
+
 	function handleClick(event: MouseEvent) {
 		const target = event.target as HTMLElement;
 		if (target && target.tagName === 'path' && target.id != 'borders') {
@@ -46,9 +59,11 @@
 			target.classList.add('fade-out');
 		}
 	}
-
+	function handleDragOver(e: DragEvent): void {
+		e.preventDefault();
+	}
 	onMount(() => {
-        const visibleId = getRandomInteger(0, pathes.length - 1);
+		const visibleId = getRandomInteger(0, pathes.length - 1);
 		const maskPath = document.getElementById(`mask-${visibleId}`);
 		maskPath?.setAttribute('fill', 'black');
 		const overlayPath = document.getElementById(`${visibleId}`);
@@ -66,6 +81,8 @@
 	{...rest}
 	bind:this={svgEl}
 	onclick={handleClick}
+    ondragover={handleDragOver}
+	ondrop={handleDrop}
 >
 	<defs>
 		<filter id="desaturate" color-interpolation-filters="sRGB">
