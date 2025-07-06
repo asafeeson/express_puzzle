@@ -81,7 +81,7 @@
 	{...rest}
 	bind:this={svgEl}
 	onclick={handleClick}
-    ondragover={handleDragOver}
+	ondragover={handleDragOver}
 	ondrop={handleDrop}
 >
 	<defs>
