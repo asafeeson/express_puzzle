@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import { getRandomInteger } from '$lib/utils';
+	import { goto } from '$app/navigation';
 
 	interface Props {
 		width?: string;
@@ -19,6 +20,8 @@
 		onDrop,
 		...rest
 	}: Props = $props();
+
+	let placedItems = $state(0);
 
 	const pathes = [
 		{
@@ -52,7 +55,12 @@
 
 	function handleClick(event: MouseEvent) {
 		const target = event.target as HTMLElement;
+        console.log('placedItems', placedItems);
+		if (placedItems === 2) {
+			goto('/prizes/first');
+		}
 		if (target && target.tagName === 'path' && target.id != 'borders') {
+			placedItems++;
 			const targetId = target.id;
 			const maskPath = document.getElementById(`mask-${targetId}`);
 			maskPath?.setAttribute('fill', 'black');

@@ -211,11 +211,11 @@
 		<div bind:this={puzzleContainer}>
 			<ImageContainer>
 				<div class="relative w-full my-4 p-2 h-fit">
-					<img src="/frame.png" class="absolute inset-0 z-10 aspect-square w-full h-full" alt="" />
+					<img src="/frame.png" class="absolute inset-0 z-10 aspect-square w-full h-full pointer-events-none" alt="" />
 					<PuzzleSvg
 						id="puzzle"
 						imageHref="/pzz-owl/cat-owl.png"
-						class="absolute inset-0 w-full h-full"
+						class="absolute inset-0 w-full h-full rounded-[40px]"
 						onDrop={handlePieceDrop}
 					></PuzzleSvg>
 					<img src="/pzz-owl/cat-owl.png" class="aspect-square w-full h-full" alt="" />
