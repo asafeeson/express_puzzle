@@ -211,6 +211,7 @@
 		<div bind:this={puzzleContainer}>
 			<ImageContainer>
 				<div class="relative w-full my-4 p-2 h-fit">
+					<img src="/frame.png" class="absolute inset-0 z-10 aspect-square w-full h-full" alt="" />
 					<PuzzleSvg
 						id="puzzle"
 						imageHref="/pzz-owl/cat-owl.png"
