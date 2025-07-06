@@ -22,7 +22,6 @@
 	function handleClick() {
 		console.log(svgEl);
 	}
-	// $effect()
 </script>
 
 <div class="relative w-full my-4 p-2 h-fit">
@@ -35,7 +34,6 @@
 		width="200"
 		height="200"
 	/>
-
 </div>
 
 

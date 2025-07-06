@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
+	import { getRandomInteger } from '$lib/utils';
 
 	interface Props {
 		width?: string;
@@ -16,14 +17,6 @@
 		imageHref = '',
 		...rest
 	}: Props = $props();
-
-	// Track revealed state for all pieces
-	let revealedCount = $state(0);
-	const totalPieces = 4; // adjust if you have more/less pieces
-
-	const randomVisible = (min: number, max: number) => {
-		return Math.floor(Math.random() * (max - min)) + min;
-	};
 
 	const pathes = [
 		{
@@ -55,12 +48,11 @@
 	}
 
 	onMount(() => {
-		const visibleId = randomVisible(0, pathes.length - 1);
+        const visibleId = getRandomInteger(0, pathes.length - 1);
 		const maskPath = document.getElementById(`mask-${visibleId}`);
+		maskPath?.setAttribute('fill', 'black');
 		const overlayPath = document.getElementById(`${visibleId}`);
 		overlayPath?.classList.add('fade-out');
-		maskPath?.setAttribute('fill', 'black');
-		console.log(maskPath);
 	});
 </script>
 
