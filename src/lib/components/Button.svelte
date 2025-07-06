@@ -9,7 +9,7 @@
 	const { children, href, title }: Props = $props();
 </script>
 
-<a {href} {title} aria-label={title} class="ddd-button">
+<a {href} {title} aria-label={title} class="ddd-button" >
 	{@render children()}
 </a>
 

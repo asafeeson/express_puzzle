@@ -19,7 +19,8 @@
 	const gridTemplate = $derived(`repeat(${gridSide}, minmax(0, 1fr))`);
 </script>
 
-<div class="w-full my-4 p-2 bg-puzzle-bg rounded-xl">
+<div class="relative w-full my-4 p-2 bg-puzzle-bg overflow-hidden">
+	<img src="/frame.png" alt="frame" class="absolute inset-0 w-full h-full object-fill" />
 	<div
 		class="grid gap-1"
 		style:grid-template-columns={gridTemplate}
@@ -32,7 +33,7 @@
 						<img
 							src={piece.imageSrc}
 							alt="Puzzle piece {piece.id}"
-							class="w-full h-full object-contain rounded-md"
+							class="w-full h-full object-cover rounded-md"
 						/>
 					{/if}
 				{/snippet}

@@ -3,60 +3,26 @@
 	import ArrowRight from '$lib/components/ArrowRight.svelte';
 	import Content from '$lib/components/Content.svelte';
 	import ImageContainer from '$lib/components/ImageContainer.svelte';
+	import PuzzleBoard from '$lib/components/PuzzleBoard.svelte';
 	import RoundButton from '$lib/components/RoundButton.svelte';
 	import TextStyle3D from '$lib/components/TextStyle3D.svelte';
+	import { type PuzzlePieceType } from '$lib/types';
+	import { onMount } from 'svelte';
+	import { quintOut } from 'svelte/easing';
 	import { slide } from 'svelte/transition';
 	import type { PageData } from './$types';
-	import { quintOut } from 'svelte/easing';
-	import { onMount } from 'svelte';
-	import PuzzleBoard from '$lib/components/PuzzleBoard.svelte';
+	import puzzlePiecesData from '$lib/data/puzzles.json';
 
 	const { data }: { data: PageData } = $props();
-	interface PuzzlePieceType {
-		id: number;
-		imageSrc: string;
-	}
-	const puzzleElements: PuzzlePieceType[] = [
-		{ id: 1, imageSrc: '/pzz-owl/1.png' },
-		{ id: 2, imageSrc: '/pzz-owl/2.png' },
-		{ id: 3, imageSrc: '/pzz-owl/3.png' },
-		{ id: 4, imageSrc: '/pzz-owl/4.png' }
-	];
 
-	function getNextPuzzle(index: number) {
-		const maxLen = puzzleElements.length;
-		console.log(maxLen);
-		if (index === maxLen - 1) {
-			activePuzzleElement = 0;
-		} else {
-			activePuzzleElement++;
-		}
-		console.log(activePuzzleElement);
-	}
-	function getPrevPuzzle(index: number) {
-		if (index === 1) {
-			activePuzzleElement = puzzleElements.length;
-		} else {
-			activePuzzleElement--;
-		}
-		console.log(activePuzzleElement);
-	}
+	const puzzleElements = $state<PuzzlePieceType[]>(puzzlePiecesData.puzzleOwlPieces);
 
+	let contentCotainer = $state();
+	let puzzleContainer = $state();
 	let placedPieces = $state<(PuzzlePieceType | null)[]>(Array(4).fill(null));
-
-	function handlePieceDrop(dropZoneId: number, pieceId: number) {
-		const pieceToPlace = puzzleElements.find((p) => p.id === pieceId);
-		if (pieceToPlace) {
-			placedPieces[dropZoneId] = pieceToPlace;
-			// Optionally remove from the tray if you implement a tray
-			console.log(`Piece ${pieceId} dropped into zone ${dropZoneId}`);
-		}
-	}
-
 	let activePuzzleElement = $state<number>(0);
 	let selectedPuzzleElement = $derived<string>(puzzleElements[activePuzzleElement].imageSrc);
 	let buttonElement = $state<HTMLButtonElement>();
-
 	let isDragging = $state<boolean>(false);
 	let startX = $state(0);
 	let startY = $state(0);
@@ -64,6 +30,24 @@
 	let currentY = $state(0);
 	let originalPosition = $state(null);
 	let isPositioned = $state<boolean>(false);
+
+	function getNextPuzzle(index: number) {
+		const maxLen = puzzleElements.length - 1;
+		activePuzzleElement = index === maxLen ? 0 : index + 1;
+	}
+	function getPrevPuzzle(index: number) {
+		activePuzzleElement = index > 0 ? index - 1 : puzzleElements.length - 1;
+	}
+
+	function handlePieceDrop(dropZoneId: number, pieceId: number) {
+		const pieceToPlace = puzzleElements.find((p) => p.id === pieceId);
+		console.log('pieceToPlace', pieceToPlace);
+		if (pieceToPlace) {
+			placedPieces[dropZoneId] = pieceToPlace;
+			// Optionally remove from the tray if you implement a tray
+			console.log(`Piece ${pieceId} dropped into zone ${dropZoneId}`);
+		}
+	}
 
 	onMount(() => {
 		// Сохраняем исходную позицию элемента в потоке документа
@@ -150,6 +134,19 @@
 			// Элемент попал в разрешенную зону - можно оставить его там
 			console.log('Элемент размещен в puzzle зоне!');
 			// Можно добавить дополнительную логику для "защелкивания"
+			const placedPieceId = puzzleElements[activePuzzleElement].id;
+			handlePieceDrop(0, placedPieceId); // Assuming dropZoneId 0 for now
+			// Удаляем элемент из списка puzzleElements
+			puzzleElements.splice(activePuzzleElement, 1);
+			// Если список не пуст, корректируем activePuzzleElement
+			if (puzzleElements.length > 0) {
+				activePuzzleElement = Math.min(activePuzzleElement, puzzleElements.length - 1);
+				selectedPuzzleElement = puzzleElements[activePuzzleElement].imageSrc;
+			} else {
+				// Все элементы размещены, можно скрыть кнопку или показать сообщение
+				selectedPuzzleElement = ''; // Или другой индикатор
+			}
+			returnToOriginalPosition();
 		} else {
 			// Возвращаем элемент в исходное положение
 			returnToOriginalPosition();
@@ -187,6 +184,13 @@
 		}, 400);
 	}
 
+	function handleDragStart(e: DragEvent, piece: PuzzlePieceType) {
+		if (e.dataTransfer && e.currentTarget instanceof HTMLElement) {
+			e.dataTransfer.setData('pieceId', piece.id.toString());
+			e.currentTarget.style.opacity = '0.5';
+		}
+	}
+
 	function handleButtonClick() {
 		if (!isDragging) {
 			console.log('Кнопка нажата!');
@@ -197,9 +201,6 @@
 	function resetPosition() {
 		returnToOriginalPosition();
 	}
-
-	let contentCotainer = $state();
-	let puzzleContainer = $state();
 </script>
 
 <div bind:this={contentCotainer}>
@@ -222,24 +223,25 @@
 				{#key activePuzzleElement}
 					<button
 						bind:this={buttonElement}
-						class="draggable-button"
+						class="draggable-button h-[106px]"
 						class:dragging={isDragging}
 						onmousedown={handlePointerDown}
 						ontouchstart={handlePointerDown}
 						onclick={handleButtonClick}
+						ondragstart={handleDragStart}
+						transition:slide={{ delay: 250, duration: 300, axis: 'x', easing: quintOut }}
 					>
 						<img
 							src={selectedPuzzleElement}
 							alt=""
-							class="drop-shadow-[0_2px_4px_rgba(0,0,0,0.25)] h-[106px]"
-							transition:slide={{ delay: 250, duration: 300, easing: quintOut }}
+							class="drop-shadow-[0_2px_4px_rgba(0,0,0,0.25)] w-full h-full object-cover"
 						/>
 					</button>
 				{/key}
 			</div>
 			<RoundButton onclick={() => getNextPuzzle(activePuzzleElement)}><ArrowRight /></RoundButton>
 		</div>
-		<button class="reset-button" onclick={resetPosition}> Сбросить позицию </button>
+		<button class="reset-button" onclick={resetPosition}>Сбросить позицию</button>
 		<a class="uppercase text-center" href="/prizes/first">далее</a>
 	</Content>
 </div>
