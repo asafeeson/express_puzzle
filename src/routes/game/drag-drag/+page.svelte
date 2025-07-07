@@ -32,7 +32,6 @@
 		prevIndex = activePuzzleElement;
 		const maxLen = puzzleElements.length - 1;
 		activePuzzleElement = index === maxLen ? 0 : index + 1;
-
 	}
 	function getPrevPuzzle(index: number) {
 		prevIndex = activePuzzleElement;
@@ -307,15 +306,19 @@
 	<div class="flex justify-between items-center w-full h-full">
 		<RoundButton onclick={() => getPrevPuzzle(activePuzzleElement)}><ArrowLeft /></RoundButton>
 		<!-- Слайдер: только один активный элемент -->
-		<div class="relative w-[100px] h-[100px] overflow-hidden flex justify-center items-center">
+		<div class="relative w-[150px] h-[150px] flex justify-center items-center">
 			{#each puzzleElements as elem, i (elem.id)}
 				{#if i === activePuzzleElement}
 					<button
 						id={elem.id.toString()}
-						class="draggable absolute w-full h-full"
+						class="draggable w-full h-full"
 						onmousedown={(e) => startCustomDrag(e, elem.id)}
 						ontouchstart={(e) => startCustomDrag(e, elem.id)}
-						in:fly={{ x: prevIndex < activePuzzleElement ? 100 : -100, duration: 300, easing: cubicOut }}
+						in:fly={{
+							x: prevIndex < activePuzzleElement ? 100 : -100,
+							duration: 300,
+							easing: cubicOut
+						}}
 						out:fly={{
 							x: prevIndex < activePuzzleElement ? -100 : 100,
 							duration: 300,
