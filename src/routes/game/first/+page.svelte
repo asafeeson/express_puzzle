@@ -75,10 +75,10 @@
 		});
 
 		// Подсвечиваем path под курсором, если он не borders
-		const path = target?.closest?.('path');
-		if (path instanceof SVGPathElement && path.id !== 'borders') {
-			path.setAttribute('fill', 'yellow');
-		}
+		// const path = target?.closest?.('path');
+		// if (path instanceof SVGPathElement && path.id !== 'borders') {
+		// 	path.setAttribute('fill', 'yellow');
+		// }
 	}
 
 	function startCustomDrag(e: MouseEvent | TouchEvent, pieceId: number) {
@@ -148,8 +148,7 @@
 					draggable.remove();
 				}, 500);
 
-				puzzleElements = puzzleElements.filter((p) => p.id !== pieceId)
-
+				puzzleElements = puzzleElements.filter((p) => p.id !== pieceId);
 			}
 		}
 
@@ -309,17 +308,16 @@
 		</p>
 	</ImageContainer>
 
-	<div
+	<!-- <div
 		class="grid grid-cols-[auto_1fr_auto] w-full items-center justify-items-center h-[150px] my-auto"
 	>
 		<RoundButton onclick={() => getPrevPuzzle(activePuzzleElement)}><ArrowLeft /></RoundButton>
-		<!-- Слайдер: только один активный элемент -->
 		<div class="flex justify-center items-center">
 			{#each puzzleElements as elem, i (elem.id)}
 				{#if i === activePuzzleElement}
 					<button
 						id={elem.id.toString()}
-						class="draggable w-full h-full"
+						class="draggable w-full h-full fixed"
 						onmousedown={(e) => startCustomDrag(e, elem.id)}
 						ontouchstart={(e) => startCustomDrag(e, elem.id)}
 						in:fly={{
@@ -344,6 +342,45 @@
 				{/if}
 			{/each}
 		</div>
+		<RoundButton onclick={() => getNextPuzzle(activePuzzleElement)}><ArrowRight /></RoundButton>
+	</div> -->
+	<div
+		class="grid grid-cols-[auto_1fr_auto] w-full items-center justify-items-center h-[150px] my-auto"
+	>
+		<RoundButton onclick={() => getPrevPuzzle(activePuzzleElement)}><ArrowLeft /></RoundButton>
+
+		<div class="flex justify-center items-center w-full h-full">
+			<div class="relative w-full h-full">
+				{#each puzzleElements as elem, i (elem.id)}
+					{#if i === activePuzzleElement}
+						<button
+							id={elem.id.toString()}
+							class="draggable absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-10"
+							onmousedown={(e) => startCustomDrag(e, elem.id)}
+							ontouchstart={(e) => startCustomDrag(e, elem.id)}
+							in:fly={{
+								x: prevIndex < activePuzzleElement ? 100 : -100,
+								duration: 300,
+								easing: cubicOut
+							}}
+							out:fly={{
+								x: prevIndex < activePuzzleElement ? -100 : 100,
+								duration: 300,
+								easing: cubicOut
+							}}
+						>
+							<img
+								src={elem.imageSrc}
+								alt=""
+								class="drop-shadow-[0_2px_4px_rgba(0,0,0,0.25)]"
+								style="width: auto; height: auto;"
+							/>
+						</button>
+					{/if}
+				{/each}
+			</div>
+		</div>
+
 		<RoundButton onclick={() => getNextPuzzle(activePuzzleElement)}><ArrowRight /></RoundButton>
 	</div>
 </Content>
