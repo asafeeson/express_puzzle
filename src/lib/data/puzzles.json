@@ -16,13 +16,13 @@
             "id": 2,
             "imageSrc": "/pzz-owl/owl-2.png",
             "isPlaced": false,
-            "placeId": 1
+            "placeId": 0
         },
         {
             "id": 3,
             "imageSrc": "/pzz-owl/owl-3.png",
             "isPlaced": false,
-            "placeId": 0
+            "placeId": 1
         }
     ],
     "puzzleChePieces": [

@@ -17,7 +17,12 @@
 
 	const { data }: { data: PageData } = $props();
 
-	const puzzleElements = $state<PuzzlePieceType[]>(puzzlePiecesData.puzzleOwlPieces);
+	const allPuzzlePieces = puzzlePiecesData.puzzleOwlPieces;
+	const randomIndex = Math.floor(Math.random() * allPuzzlePieces.length);
+	const randomPieceToPlace = allPuzzlePieces[randomIndex];
+
+	// Инициализируем элементы для слайдера, исключая уже размещенный
+	const puzzleElements = $state<PuzzlePieceType[]>(allPuzzlePieces.filter(p => p.id !== randomPieceToPlace.id));
 
 	let contentCotainer = $state();
 	let activePuzzleElement = $state<number>(0);
@@ -209,18 +214,14 @@
 	const imageHref = '/pzz-owl/cat-owl.png';
 
 	onMount(() => {
-		// Выбираем случайный элемент
-		const randomIndex = Math.floor(Math.random() * puzzlePiecesData.puzzleOwlPieces.length);
-		const randomPiece = puzzlePiecesData.puzzleOwlPieces[randomIndex];
-
 		// Красим соответствующий mask path
-		const maskPath = document.getElementById(`mask-${randomPiece.placeId}`);
+		const maskPath = document.getElementById(`mask-${randomPieceToPlace.placeId}`);
 		if (maskPath) {
 			maskPath.setAttribute('fill', 'black');
 		}
 
 		// Добавляем в размещённые
-		placedPieces.add(randomPiece.id);
+		placedPieces.add(randomPieceToPlace.id);
 	});
 </script>
 
@@ -303,10 +304,10 @@
 		</p>
 	</ImageContainer>
 
-	<div class="grid grid-cols-[auto_1fr_auto] w-full items-center h-[150px] my-auto">
+	<div class="grid grid-cols-[auto_1fr_auto] w-full items-center justify-items-center h-[150px] my-auto">
 		<RoundButton onclick={() => getPrevPuzzle(activePuzzleElement)}><ArrowLeft /></RoundButton>
 		<!-- Слайдер: только один активный элемент -->
-		<div class="w-[150px] h-full flex justify-center items-center justify-self-center">
+		<div class="flex justify-center items-center">
 			{#each puzzleElements as elem, i (elem.id)}
 				{#if i === activePuzzleElement}
 					<button
