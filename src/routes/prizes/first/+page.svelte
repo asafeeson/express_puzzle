@@ -10,7 +10,7 @@
 
 <Content>
 	<ImageContainer>
-		<div class="overflow-hidden rounded-2xl swing-in-top-bck">
+		<div class="overflow-hidden rounded-4xl swing-in-top-bck">
 			<video autoplay loop muted playsinline>
 				<source src="/owl-cat-animation.webm" type="video/webm" />
 				<source src="/owl-cat-animation.mp4" type="video/mp4" />

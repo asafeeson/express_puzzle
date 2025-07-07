@@ -17,32 +17,37 @@
 
 	const { data }: { data: PageData } = $props();
 
-	const allPuzzlePieces = puzzlePiecesData.puzzleOwlPieces;
-	const randomIndex = Math.floor(Math.random() * allPuzzlePieces.length);
-	const randomPieceToPlace = allPuzzlePieces[randomIndex];
+	const boardPuzzlePieces = puzzlePiecesData.puzzleOwlPieces;
+	const trayPuzzlePieces = puzzlePiecesData.puzzleOwlPieces;
+
+	const randomIndex = Math.floor(Math.random() * boardPuzzlePieces.length);
+	const randomPieceToPlace = boardPuzzlePieces[randomIndex];
 
 	// Инициализируем элементы для слайдера, исключая уже размещенный
-	let puzzleElements = $state<PuzzlePieceType[]>(
-		allPuzzlePieces.filter((p) => p.id !== randomPieceToPlace.id)
+	let puzzleElementsOnBoard = $state<PuzzlePieceType[]>(
+		boardPuzzlePieces.filter((p) => p.id !== randomPieceToPlace.id)
+	);
+	let puzzleElementsInTray = $state<PuzzlePieceType[]>(
+		trayPuzzlePieces.filter((p) => p.id !== randomPieceToPlace.id)
 	);
 
 	let contentCotainer = $state();
 	let activePuzzleElement = $state<number>(0);
 	let prevIndex = $state<number>(0);
 	let selectedDraggable = $state<HTMLElement | null>();
-	let shiftX = $state<number>(0);
-	let shiftY = $state<number>(0);
+	let shiftX: number;
+	let shiftY: number;
 	let dragContext: { pieceId: number | null } = { pieceId: null };
 	const placedPieces = new Set<number>();
 
-	function getNextPuzzle(index: number) {
+	function getNextPuzzlePiece(index: number) {
 		prevIndex = activePuzzleElement;
-		const maxLen = puzzleElements.length - 1;
+		const maxLen = puzzleElementsInTray.length - 1;
 		activePuzzleElement = index === maxLen ? 0 : index + 1;
 	}
-	function getPrevPuzzle(index: number) {
+	function getPrevPuzzlePiece(index: number) {
 		prevIndex = activePuzzleElement;
-		activePuzzleElement = index > 0 ? index - 1 : puzzleElements.length - 1;
+		activePuzzleElement = index > 0 ? index - 1 : puzzleElementsInTray.length - 1;
 	}
 
 	function disableScroll() {
@@ -63,16 +68,16 @@
 		selectedDraggable.style.top = clientY - shiftY + 'px';
 
 		// Временно скрываем, чтобы корректно сработал elementFromPoint
-		selectedDraggable.style.visibility = 'hidden';
-		const target = document.elementFromPoint(clientX, clientY);
-		selectedDraggable.style.visibility = 'visible';
+		// selectedDraggable.style.visibility = 'hidden';
+		// const target = document.elementFromPoint(clientX, clientY);
+		// selectedDraggable.style.visibility = 'visible';
 
 		// Сбрасываем fill у всех path, кроме borders
-		document.querySelectorAll('path').forEach((p) => {
-			if (p.id !== 'borders' && !p.id.startsWith('mask-')) {
-				p.setAttribute('fill', 'white');
-			}
-		});
+		// document.querySelectorAll('path').forEach((p) => {
+		// 	if (p.id !== 'borders' && !p.id.startsWith('mask-')) {
+		// 		p.setAttribute('fill', 'white');
+		// 	}
+		// });
 
 		// Подсвечиваем path под курсором, если он не borders
 		// const path = target?.closest?.('path');
@@ -84,27 +89,36 @@
 	function startCustomDrag(e: MouseEvent | TouchEvent, pieceId: number) {
 		console.log('START CUSTOM DRAG');
 		const target: HTMLElement | null = (e.target as HTMLElement)?.closest('.draggable');
+
 		if (!target) return;
+
+		const targetClone = target.cloneNode(true) as HTMLButtonElement;
+		document.body.appendChild(targetClone);
+		targetClone.style.position = 'absolute'; // <-- добавить эту строку
+		targetClone.classList.add('dragging');
+
+		target.classList.add('inactive'); // исправлено: без точки
+
 		disableScroll();
 
 		e.preventDefault();
-		selectedDraggable = target;
+		selectedDraggable = targetClone;
 		dragContext.pieceId = pieceId;
 		console.log('dragContext set:', dragContext.pieceId);
 
 		const isTouch = 'touches' in e;
+
 		const coords = isTouch
 			? { x: e.touches[0].clientX, y: e.touches[0].clientY }
 			: { x: (e as MouseEvent).clientX, y: (e as MouseEvent).clientY };
 
 		const rect = target.getBoundingClientRect();
-		shiftX = coords.x - rect.left;
-		shiftY = coords.y - rect.top;
 
-		target.style.position = 'fixed';
-		target.style.left = rect.left + 'px';
-		target.style.top = rect.top + 'px';
-		target.style.zIndex = '40';
+		shiftX = rect.width / 2;
+		shiftY = rect.height / 2;
+		targetClone.style.left = coords.x - shiftX + 'px';
+		targetClone.style.top = coords.y - shiftY + 'px';
+		targetClone.style.zIndex = '50';
 
 		document.addEventListener('mousemove', onMove);
 		document.addEventListener('mouseup', stopCustomDrag);
@@ -114,12 +128,10 @@
 
 	function handleDropManual(pathId: number, pieceId: number) {
 		console.log(`Manual drop handler: piece ${pieceId} -> path ${pathId}`);
-		const path = document.getElementById(pathId.toString());
-		path?.classList.remove('highlight');
+		// const path = document.getElementById(pathId.toString());
+		// path?.classList.remove('highlight');
 
-		const matchedPiece = puzzlePiecesData.puzzleOwlPieces.find(
-			(p) => p.placeId === pathId && p.id === pieceId
-		);
+		const matchedPiece = boardPuzzlePieces.find((p) => p.placeId === pathId && p.id === pieceId);
 
 		if (matchedPiece) {
 			console.log('Element matched:', pathId, pieceId);
@@ -131,24 +143,27 @@
 			}
 
 			// Анимация исчезновения кнопки
-			const draggable = document.querySelector(`button[id="${pieceId}"]`);
-			if (draggable instanceof HTMLElement) {
-				// Устанавливаем стили для перехода
-				draggable.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
-				draggable.style.pointerEvents = 'none';
+			if (selectedDraggable instanceof HTMLElement) {
+				console.log('начинаю анимацию исчезновения');
+				selectedDraggable.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
+				selectedDraggable.style.pointerEvents = 'none';
 
-				// Используем requestAnimationFrame, чтобы браузер успел применить transition
+				// Триггерим анимацию
 				requestAnimationFrame(() => {
-					draggable.style.opacity = '0';
-					draggable.style.transform = 'scale(0.5) rotate(20deg) translateY(-20px)';
+					selectedDraggable.style.opacity = '0';
+					selectedDraggable.style.transform = 'scale(0.5)';
 				});
 
-				// Удаление элемента после завершения анимации
-				setTimeout(() => {
-					draggable.remove();
-				}, 500);
+				// Удаляем после окончания transition
+				const handler = () => {
+					console.log('transitionend');
+					selectedDraggable.remove();
+					selectedDraggable.removeEventListener('transitionend', handler);
+				};
 
-				puzzleElements = puzzleElements.filter((p) => p.id !== pieceId);
+				selectedDraggable.addEventListener('transitionend', handler);
+
+				updatePuzzleElementsInTray(pieceId);
 			}
 		}
 
@@ -163,6 +178,10 @@
 		}
 	}
 
+	function updatePuzzleElementsInTray(pieceId: number) {
+		puzzleElementsInTray = puzzleElementsInTray.filter((p) => p.id !== pieceId);
+	}
+
 	function stopCustomDrag(e: MouseEvent | TouchEvent) {
 		if (!selectedDraggable) return;
 
@@ -170,24 +189,28 @@
 		const clientX = isTouch ? e.changedTouches[0].clientX : e.clientX;
 		const clientY = isTouch ? e.changedTouches[0].clientY : e.clientY;
 
-		// Найдём элемент под курсором/пальцем
-		selectedDraggable.style.visibility = 'hidden'; // временно скрываем, чтобы не мешала
-		const target = document.elementFromPoint(clientX, clientY);
+		selectedDraggable.style.visibility = 'hidden';
+		const dropTarget = document.elementFromPoint(clientX, clientY);
 		selectedDraggable.style.visibility = 'visible';
 		document.querySelectorAll('path').forEach((p) => {
 			if (p.id !== 'borders' && !p.id.startsWith('mask-')) {
 				p.setAttribute('fill', 'white');
 			}
 		});
-		const path = target?.closest('path');
+		const path = dropTarget?.closest('path');
 		if (path && dragContext.pieceId !== null) {
 			console.log(`Dropped piece ${dragContext.pieceId} on path ${path.id}`);
-			// Здесь можно вызвать твой handleDrop вручную:
 			handleDropManual(parseInt(path.id), dragContext.pieceId);
 		}
+		const clone = selectedDraggable;
+		const initialTarget = document.querySelector(`button[id="${dragContext.pieceId}"]`);
+		initialTarget?.classList.remove('inactive');
 
+		// selectedDraggable.classList.add();
+		selectedDraggable.remove();
 		selectedDraggable = null;
 		dragContext.pieceId = null;
+
 		enableScroll();
 
 		// Снимаем слушатели
@@ -308,16 +331,18 @@
 		</p>
 	</ImageContainer>
 
-	<!-- <div
+	<div
 		class="grid grid-cols-[auto_1fr_auto] w-full items-center justify-items-center h-[150px] my-auto"
 	>
-		<RoundButton onclick={() => getPrevPuzzle(activePuzzleElement)}><ArrowLeft /></RoundButton>
-		<div class="flex justify-center items-center">
-			{#each puzzleElements as elem, i (elem.id)}
+		<RoundButton onclick={() => getPrevPuzzlePiece(activePuzzleElement)}><ArrowLeft /></RoundButton>
+
+		<div class="flex justify-center items-center w-full h-full">
+			{#each puzzleElementsInTray as elem, i (elem.id)}
 				{#if i === activePuzzleElement}
 					<button
 						id={elem.id.toString()}
-						class="draggable w-full h-full fixed"
+						class="draggable"
+						class:inactive={false}
 						onmousedown={(e) => startCustomDrag(e, elem.id)}
 						ontouchstart={(e) => startCustomDrag(e, elem.id)}
 						in:fly={{
@@ -333,55 +358,15 @@
 					>
 						<img
 							src={elem.imageSrc}
-							alt=""
-							width="100"
-							height="100"
-							class="object-cover drop-shadow-[0_2px_4px_rgba(0,0,0,0.25)]"
+							alt="puzzle"
+							class="natural-size-image drop-shadow-[0_2px_4px_rgba(0,0,0,0.25)]"
 						/>
 					</button>
 				{/if}
 			{/each}
 		</div>
-		<RoundButton onclick={() => getNextPuzzle(activePuzzleElement)}><ArrowRight /></RoundButton>
-	</div> -->
-	<div
-		class="grid grid-cols-[auto_1fr_auto] w-full items-center justify-items-center h-[150px] my-auto"
-	>
-		<RoundButton onclick={() => getPrevPuzzle(activePuzzleElement)}><ArrowLeft /></RoundButton>
-
-		<div class="flex justify-center items-center w-full h-full">
-			<div class="relative w-full h-full">
-				{#each puzzleElements as elem, i (elem.id)}
-					{#if i === activePuzzleElement}
-						<button
-							id={elem.id.toString()}
-							class="draggable absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-10"
-							onmousedown={(e) => startCustomDrag(e, elem.id)}
-							ontouchstart={(e) => startCustomDrag(e, elem.id)}
-							in:fly={{
-								x: prevIndex < activePuzzleElement ? 100 : -100,
-								duration: 300,
-								easing: cubicOut
-							}}
-							out:fly={{
-								x: prevIndex < activePuzzleElement ? -100 : 100,
-								duration: 300,
-								easing: cubicOut
-							}}
-						>
-							<img
-								src={elem.imageSrc}
-								alt=""
-								class="drop-shadow-[0_2px_4px_rgba(0,0,0,0.25)]"
-								style="width: auto; height: auto;"
-							/>
-						</button>
-					{/if}
-				{/each}
-			</div>
-		</div>
-
-		<RoundButton onclick={() => getNextPuzzle(activePuzzleElement)}><ArrowRight /></RoundButton>
+		<RoundButton onclick={() => getNextPuzzlePiece(activePuzzleElement)}><ArrowRight /></RoundButton
+		>
 	</div>
 </Content>
 
@@ -397,67 +382,43 @@
 		}
 	}
 
+	.dragging {
+		filter: saturate(0);
+		box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.5);
+	}
 	.disappear {
 		animation: fadeOutShrink 0.4s ease forwards;
 	}
 
-	.desaturate {
+	.inactive {
 		filter: saturate(0);
+		opacity: 0.5;
 	}
+
+	.inactive .drop-shadow-\[0_2px_4px_rgba\(0\,0\,0\,0\.25\)\] {
+		filter: none !important;
+	}
+
 	.draggable {
-		/* ОБЯЗАТЕЛЬНО - позволяет позиционировать через left/top */
-		touch-action: none; /* Отключает стандартные тач-жесты браузера */
-		cursor: move; /* Показывает, что элемент можно перетаскивать */
-		z-index: 10; /* Гарантирует, что кнопка над другими элементами */
-		-webkit-touch-callout: none; /* Отключает контекстное меню на iOS */
+		touch-action: none;
+		cursor: move;
+		z-index: 50;
+		-webkit-touch-callout: none;
 		/* Предотвращает выделение текста в разных браузерах */
-		-webkit-user-select: none; /* Chrome, Safari, Opera */
-		-moz-user-select: none; /* Firefox */
-		-ms-user-select: none; /* Internet Explorer/Edge */
-		user-select: none; /* Standard syntax */
-	}
-	.dragging {
-		/* Добавляем префиксы для transform для лучшей совместимости */
-		-webkit-transform: scale(1.05);
-		-ms-transform: scale(1.05); /* Для IE 9 */
-		transform: scale(1.05);
-		-webkit-filter: drop-shadow(8px 16px 10px rgba(0, 0, 0, 0.3));
-		filter: drop-shadow(8px 16px 10px rgba(0, 0, 0, 0.3));
-		cursor: grabbing;
-	}
+		-webkit-user-select: none;
+		-moz-user-select: none;
+		-ms-user-select: none;
+		user-select: none;
 
-	.slide-in-left {
-		-webkit-animation: slide-in-left 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
-		animation: slide-in-left 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
+		/* Позиционирование для центрирования в ячейке */
+		position: absolute;
 	}
-
-	@-webkit-keyframes slide-in-left {
-		0% {
-			-webkit-transform: translateX(-1000px);
-			transform: translateX(-1000px);
-			opacity: 0;
-		}
-		100% {
-			-webkit-transform: translateX(0);
-			transform: translateX(0);
-			opacity: 1;
-		}
-	}
-	@keyframes slide-in-left {
-		0% {
-			-webkit-transform: translateX(-1000px);
-			transform: translateX(-1000px);
-			opacity: 0;
-		}
-		100% {
-			-webkit-transform: translateX(0);
-			transform: translateX(0);
-			opacity: 1;
-		}
-	}
-	path.highlight {
-		stroke: #00f;
-		stroke-width: 2;
-		fill: yellow;
+	.natural-size-image {
+		/* Сохранение натурального размера */
+		width: auto;
+		height: auto;
+		max-width: none;
+		max-height: none;
+		display: block;
 	}
 </style>
