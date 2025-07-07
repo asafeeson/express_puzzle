@@ -22,7 +22,7 @@
 	const randomPieceToPlace = allPuzzlePieces[randomIndex];
 
 	// Инициализируем элементы для слайдера, исключая уже размещенный
-	const puzzleElements = $state<PuzzlePieceType[]>(
+	let puzzleElements = $state<PuzzlePieceType[]>(
 		allPuzzlePieces.filter((p) => p.id !== randomPieceToPlace.id)
 	);
 
@@ -101,7 +101,7 @@
 		shiftX = coords.x - rect.left;
 		shiftY = coords.y - rect.top;
 
-		target.style.position = 'absolute';
+		target.style.position = 'fixed';
 		target.style.left = rect.left + 'px';
 		target.style.top = rect.top + 'px';
 		target.style.zIndex = '40';
@@ -147,6 +147,9 @@
 				setTimeout(() => {
 					draggable.remove();
 				}, 500);
+
+				puzzleElements = puzzleElements.filter((p) => p.id !== pieceId)
+
 			}
 		}
 
