@@ -8,357 +8,268 @@
 	import TextStyle3D from '$lib/components/TextStyle3D.svelte';
 	import { type PuzzlePieceType } from '$lib/types';
 	import { onMount } from 'svelte';
-	import { cubicOut, quintOut } from 'svelte/easing';
-	import { fly, slide } from 'svelte/transition';
-	import type { PageData } from './$types';
+	import { quintOut } from 'svelte/easing';
+	import { slide } from 'svelte/transition';
+	import type { PageData } from '../first/$types';
 	import puzzlePiecesData from '$lib/data/puzzles.json';
 	import PuzzleSvg from '$lib/components/PuzzleSVG.svelte';
-	import { goto } from '$app/navigation';
 
 	const { data }: { data: PageData } = $props();
 
 	const puzzleElements = $state<PuzzlePieceType[]>(puzzlePiecesData.puzzleOwlPieces);
 
 	let contentCotainer = $state();
+	let puzzleContainer = $state();
+	let placedPieces = $state<(PuzzlePieceType | null)[]>(Array(4).fill(null));
 	let activePuzzleElement = $state<number>(0);
-	let prevIndex = $state<number>(0);
-	let selectedDraggable = $state<HTMLElement | null>();
-	let shiftX = $state<number>(0);
-	let shiftY = $state<number>(0);
-	let dragContext: { pieceId: number | null } = { pieceId: null };
-	const placedPieces = new Set<number>();
+	let selectedPuzzleElement = $derived<string>(puzzleElements[activePuzzleElement].imageSrc);
+	let buttonElement = $state<HTMLButtonElement>();
+	let isDragging = $state<boolean>(false);
+	let startX = $state(0);
+	let startY = $state(0);
+	let currentX = $state(0);
+	let currentY = $state(0);
+	let originalPosition = $state(null);
+	let isPositioned = $state<boolean>(false);
 
 	function getNextPuzzle(index: number) {
-		prevIndex = activePuzzleElement;
 		const maxLen = puzzleElements.length - 1;
 		activePuzzleElement = index === maxLen ? 0 : index + 1;
 	}
 	function getPrevPuzzle(index: number) {
-		prevIndex = activePuzzleElement;
 		activePuzzleElement = index > 0 ? index - 1 : puzzleElements.length - 1;
 	}
 
-	function disableScroll() {
-		document.body.style.overflow = 'hidden';
-	}
-	function enableScroll() {
-		document.body.style.overflow = '';
-	}
-
-	function onMove(e: MouseEvent | TouchEvent) {
-		if (!selectedDraggable) return;
-		e.preventDefault();
-
-		const clientX = 'touches' in e ? e.touches[0].clientX : e.clientX;
-		const clientY = 'touches' in e ? e.touches[0].clientY : e.clientY;
-
-		selectedDraggable.style.left = clientX - shiftX + 'px';
-		selectedDraggable.style.top = clientY - shiftY + 'px';
-
-		// Временно скрываем, чтобы корректно сработал elementFromPoint
-		selectedDraggable.style.visibility = 'hidden';
-		const target = document.elementFromPoint(clientX, clientY);
-		selectedDraggable.style.visibility = 'visible';
-
-		// Сбрасываем fill у всех path, кроме borders
-		document.querySelectorAll('path').forEach((p) => {
-			if (p.id !== 'borders' && !p.id.startsWith('mask-')) {
-				p.setAttribute('fill', 'white');
-			}
-		});
-
-		// Подсвечиваем path под курсором, если он не borders
-		const path = target?.closest?.('path');
-		if (path instanceof SVGPathElement && path.id !== 'borders') {
-			path.setAttribute('fill', 'yellow');
+	function handlePieceDrop(dropZoneId: number, pieceId: number) {
+		const pieceToPlace = puzzleElements.find((p) => p.id === pieceId);
+		console.log('pieceToPlace', pieceToPlace);
+		if (pieceToPlace) {
+			placedPieces[dropZoneId] = pieceToPlace;
+			// Optionally remove from the tray if you implement a tray
+			console.log(`Piece ${pieceId} dropped into zone ${dropZoneId}`);
 		}
 	}
-
-	function startCustomDrag(e: MouseEvent | TouchEvent, pieceId: number) {
-		console.log('START CUSTOM DRAG');
-		const target: HTMLElement | null = (e.target as HTMLElement)?.closest('.draggable');
-		if (!target) return;
-		disableScroll();
-
-		e.preventDefault();
-		selectedDraggable = target;
-		dragContext.pieceId = pieceId;
-		console.log('dragContext set:', dragContext.pieceId);
-
-		const isTouch = 'touches' in e;
-		const coords = isTouch
-			? { x: e.touches[0].clientX, y: e.touches[0].clientY }
-			: { x: (e as MouseEvent).clientX, y: (e as MouseEvent).clientY };
-
-		const rect = target.getBoundingClientRect();
-		shiftX = coords.x - rect.left;
-		shiftY = coords.y - rect.top;
-
-		target.style.position = 'absolute';
-		target.style.left = rect.left + 'px';
-		target.style.top = rect.top + 'px';
-		target.style.zIndex = '40';
-
-		document.addEventListener('mousemove', onMove);
-		document.addEventListener('mouseup', stopCustomDrag);
-		document.addEventListener('touchmove', onMove, { passive: false });
-		document.addEventListener('touchend', stopCustomDrag);
-	}
-
-	function handleDropManual(pathId: number, pieceId: number) {
-		console.log(`Manual drop handler: piece ${pieceId} -> path ${pathId}`);
-		const path = document.getElementById(pathId.toString());
-		path?.classList.remove('highlight');
-
-		const matchedPiece = puzzlePiecesData.puzzleOwlPieces.find(
-			(p) => p.placeId === pathId && p.id === pieceId
-		);
-
-		if (matchedPiece) {
-			console.log('Element matched:', pathId, pieceId);
-
-			// Находим соответствующий mask и красим его
-			const maskPath = document.getElementById(`mask-${pathId}`);
-			if (maskPath) {
-				maskPath.setAttribute('fill', 'black');
-			}
-
-			// Анимация исчезновения кнопки
-			const draggable = document.querySelector(`button[id="${pieceId}"]`);
-			if (draggable instanceof HTMLElement) {
-				// Устанавливаем стили для перехода
-				draggable.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
-				draggable.style.pointerEvents = 'none';
-
-				// Используем requestAnimationFrame, чтобы браузер успел применить transition
-				requestAnimationFrame(() => {
-					draggable.style.opacity = '0';
-					draggable.style.transform = 'scale(0.5) rotate(20deg) translateY(-20px)';
-				});
-
-				// Удаление элемента после завершения анимации
-				setTimeout(() => {
-					draggable.remove();
-				}, 500);
-			}
-		}
-
-		placedPieces.add(pieceId);
-
-		// Проверка: все ли размещены?
-		if (placedPieces.size === puzzlePiecesData.puzzleOwlPieces.length) {
-			console.log('Все элементы размещены! Перенаправление...');
-			setTimeout(() => {
-				goto('/prizes/first');
-			}, 800); //
-		}
-	}
-
-	function stopCustomDrag(e: MouseEvent | TouchEvent) {
-		if (!selectedDraggable) return;
-
-		const isTouch = 'changedTouches' in e;
-		const clientX = isTouch ? e.changedTouches[0].clientX : e.clientX;
-		const clientY = isTouch ? e.changedTouches[0].clientY : e.clientY;
-
-		// Найдём элемент под курсором/пальцем
-		selectedDraggable.style.visibility = 'hidden'; // временно скрываем, чтобы не мешала
-		const target = document.elementFromPoint(clientX, clientY);
-		selectedDraggable.style.visibility = 'visible';
-		document.querySelectorAll('path').forEach((p) => {
-			if (p.id !== 'borders' && !p.id.startsWith('mask-')) {
-				p.setAttribute('fill', 'white');
-			}
-		});
-		const path = target?.closest('path');
-		if (path && dragContext.pieceId !== null) {
-			console.log(`Dropped piece ${dragContext.pieceId} on path ${path.id}`);
-			// Здесь можно вызвать твой handleDrop вручную:
-			handleDropManual(parseInt(path.id), dragContext.pieceId);
-		}
-
-		selectedDraggable = null;
-		dragContext.pieceId = null;
-		enableScroll();
-
-		// Снимаем слушатели
-		document.removeEventListener('mousemove', onMove);
-		document.removeEventListener('mouseup', stopCustomDrag);
-		document.removeEventListener('touchmove', onMove);
-		document.removeEventListener('touchend', stopCustomDrag);
-	}
-
-	const pathes = [
-		{
-			id: 0,
-			path: 'M435.848 221.89C425.628 222.047 414.259 223.319 403.049 224.608C391.144 225.978 379.383 227.371 369.66 227.371C364.793 227.371 360.332 227.024 356.557 226.11C352.794 225.199 349.526 223.681 347.258 221.196C342.537 216.021 343.136 207.965 348.676 196.88C353.897 186.435 352.402 179.143 348.284 174.436C343.998 169.536 336.423 166.898 328.55 166.898C320.676 166.898 313.102 169.536 308.816 174.436C304.697 179.143 303.202 186.435 308.423 196.88C313.96 207.958 314.595 216.009 309.935 221.186C307.694 223.677 304.452 225.198 300.719 226.109C296.974 227.024 292.546 227.371 287.712 227.371C278.056 227.371 266.362 225.978 254.509 224.608C243.342 223.319 232 222.045 221.78 221.889C221.622 232.375 220.32 243.937 219.035 255.072C217.656 267.021 216.301 278.444 216.301 287.809C216.301 292.485 216.641 296.544 217.444 299.835C218.25 303.139 219.478 305.484 221.11 306.954C224.177 309.715 229.868 310.269 240.776 304.813C252.318 299.04 261.517 300.293 267.802 305.795C273.896 311.128 276.755 320.043 276.755 328.659C276.755 337.275 273.896 346.19 267.802 351.523C261.517 357.025 252.318 358.278 240.776 352.505C229.868 347.049 224.177 347.603 221.11 350.364C219.478 351.834 218.25 354.179 217.444 357.482C216.641 360.774 216.301 364.833 216.301 369.509C216.301 378.874 217.656 390.297 219.035 402.246C220.321 413.386 221.623 424.955 221.781 435.445H433.571C434.174 435.445 434.754 435.205 435.181 434.777C435.608 434.35 435.848 433.77 435.848 433.166V221.89Z'
-		},
-		{
-			id: 1,
-			path: 'M110.894 166.898C103.021 166.898 95.4455 169.536 91.1595 174.436C87.0414 179.143 85.5462 186.435 90.7671 196.88C96.3046 207.958 96.9389 216.009 92.2796 221.186C90.0383 223.677 86.7963 225.198 83.063 226.109C79.3176 227.024 74.89 227.371 70.0561 227.371C60.4003 227.371 48.7067 225.978 36.853 224.608C25.6976 223.32 14.3674 222.048 4.15625 221.89L4.68648 433.16V433.166C4.68648 433.77 4.92651 434.35 5.35373 434.777C5.7809 435.205 6.3601 435.445 6.96388 435.445H217.631C217.473 425.226 216.201 413.886 214.912 402.722C213.544 390.865 212.151 379.168 212.151 369.509C212.151 364.674 212.498 360.245 213.413 356.499C214.324 352.764 215.844 349.522 218.333 347.28C223.51 342.619 231.559 343.254 242.634 348.793C253.075 354.015 260.364 352.519 265.07 348.4C269.968 344.113 272.605 336.535 272.605 328.659C272.605 320.783 269.968 313.205 265.07 308.918C260.364 304.799 253.075 303.303 242.634 308.525C231.559 314.064 223.51 314.699 218.333 310.038C215.844 307.796 214.323 304.554 213.412 300.819C212.498 297.073 212.151 292.644 212.151 287.809C212.151 278.15 213.544 266.453 214.912 254.596C216.2 243.437 217.472 232.104 217.63 221.89C207.419 222.048 196.089 223.32 184.935 224.608C173.081 225.978 161.388 227.371 151.732 227.371C146.898 227.371 142.47 227.024 138.725 226.109C134.991 225.198 131.749 223.677 129.508 221.186C124.849 216.009 125.483 207.958 131.02 196.88C136.241 186.435 134.746 179.143 130.628 174.436C126.342 169.536 118.767 166.898 110.894 166.898Z'
-		},
-		{
-			id: 2,
-			path: 'M6.96388 4.14844C6.36007 4.14846 5.78089 4.38842 5.35373 4.81569C4.92652 5.24302 4.68648 5.82285 4.68648 6.42746V6.43273L4.15625 217.735C14.6386 217.894 26.1981 219.196 37.3293 220.482C49.275 221.862 60.6941 223.217 70.0561 223.217C74.7307 223.217 78.7882 222.877 82.0783 222.074C85.3804 221.267 87.7247 220.039 89.1938 218.407C91.9552 215.338 92.508 209.645 87.0539 198.733C81.2831 187.188 82.5357 177.987 88.0353 171.7C93.367 165.605 102.28 162.745 110.894 162.745C119.508 162.745 128.421 165.605 133.752 171.7C139.252 177.987 140.504 187.188 134.734 198.733C129.28 209.645 129.832 215.338 132.594 218.407C134.063 220.039 136.407 221.267 139.709 222.074C142.999 222.877 147.057 223.217 151.732 223.217C161.094 223.217 172.513 221.861 184.458 220.482C195.589 219.196 207.148 217.894 217.631 217.735C217.474 207.513 216.202 196.167 214.912 185.997C213.544 173.14 212.151 161.443 212.151 151.784C212.151 146.949 212.498 142.52 213.412 138.774C214.323 135.039 215.844 131.797 218.333 129.555C223.51 124.894 231.559 125.529 242.634 131.068C253.075 136.29 260.364 134.794 265.07 130.675C269.968 126.388 272.605 118.81 272.605 110.934C272.605 103.058 269.968 95.4804 265.07 91.1931C260.364 87.074 253.075 85.578 242.634 90.8002C231.559 96.3395 223.51 96.9744 218.333 92.3131C215.844 90.0712 214.324 86.8287 213.413 83.0945C212.498 79.3482 212.151 74.9194 212.151 70.0839C212.151 60.4254 213.544 48.7285 214.912 36.8711C216.201 25.7066 217.473 14.3669 217.631 4.14844H6.96388Z'
-		},
-		{
-			id: 3,
-			path: 'M435.848 6.42746C435.848 5.82289 435.608 5.24303 435.181 4.81569C434.754 4.3884 434.174 4.14849 433.571 4.14844H221.781C221.623 14.638 220.321 26.2068 219.035 37.3471C217.656 49.2963 216.301 60.719 216.301 70.0839C216.301 74.7602 216.641 78.8193 217.444 82.1106C218.25 85.4139 219.478 87.759 221.11 89.2286C224.177 91.9903 229.868 92.5435 240.776 87.0878C252.318 81.3151 261.517 82.5681 267.802 88.0696C273.896 93.4029 276.755 102.318 276.755 110.934C276.755 119.55 273.896 128.465 267.802 133.798C261.517 139.3 252.318 140.553 240.776 134.78C229.868 129.324 224.177 129.878 221.11 132.639C219.478 134.109 218.25 136.454 217.444 139.757C216.641 143.049 216.301 147.108 216.301 151.784C216.301 161.149 217.656 172.571 219.035 184.521C220.322 195.666 221.624 207.241 221.781 217.735C232.271 217.891 243.843 219.195 254.985 220.482C266.931 221.862 278.35 223.217 287.712 223.217C292.386 223.217 296.444 222.877 299.734 222.074C303.036 221.267 305.38 220.039 306.849 218.407C309.611 215.338 310.164 209.645 304.709 198.733C298.939 187.188 300.191 177.987 305.691 171.7C311.023 165.605 319.935 162.745 328.55 162.745C337.164 162.745 346.076 165.605 351.408 171.7C356.907 177.987 358.16 187.188 352.389 198.733C346.938 209.638 347.524 215.325 350.325 218.396C351.82 220.034 354.196 221.265 357.533 222.073C360.857 222.877 364.951 223.217 369.66 223.217C379.091 223.217 390.579 221.861 402.575 220.482C413.759 219.196 425.358 217.892 435.848 217.735V6.42746Z'
-		}
-	];
-	const imageHref = '/pzz-owl/cat-owl.png';
 
 	onMount(() => {
-		// Выбираем случайный элемент
-		const randomIndex = Math.floor(Math.random() * puzzlePiecesData.puzzleOwlPieces.length);
-		const randomPiece = puzzlePiecesData.puzzleOwlPieces[randomIndex];
+		// Сохраняем исходную позицию элемента в потоке документа
+		const rect = buttonElement.getBoundingClientRect();
+		originalPosition = {
+			x: rect.left,
+			y: rect.top
+		};
+	});
 
-		// Красим соответствующий mask path
-		const maskPath = document.getElementById(`mask-${randomPiece.placeId}`);
-		if (maskPath) {
-			maskPath.setAttribute('fill', 'black');
+	function handlePointerDown(e) {
+		isDragging = true;
+
+		puzzleElements[activePuzzleElement].isDragging = isDragging;
+		// Получаем координаты для мыши и тач-событий
+		const clientX = e.clientX || (e.touches && e.touches[0].clientX);
+		const clientY = e.clientY || (e.touches && e.touches[0].clientY);
+
+		// Если элемент еще не позиционирован абсолютно, делаем это
+		if (!isPositioned) {
+			const rect = buttonElement.getBoundingClientRect();
+			currentX = rect.left;
+			currentY = rect.top;
+
+			// Переводим элемент в absolute позиционирование
+			buttonElement.style.position = 'absolute';
+			buttonElement.style.left = `${currentX}px`;
+			buttonElement.style.top = `${currentY}px`;
+			buttonElement.style.margin = '0';
+			buttonElement.style.zIndex = '1000';
+
+			isPositioned = true;
 		}
 
-		// Добавляем в размещённые
-		placedPieces.add(randomPiece.id);
-	});
+		// Запоминаем начальные координаты
+		startX = clientX - currentX;
+		startY = clientY - currentY;
+
+		// Добавляем обработчики событий на документ
+		document.addEventListener('mousemove', handlePointerMove);
+		document.addEventListener('mouseup', handlePointerUp);
+		document.addEventListener('touchmove', handlePointerMove, { passive: false });
+		document.addEventListener('touchend', handlePointerUp);
+
+		// Предотвращаем выделение текста и стандартное поведение
+		e.preventDefault();
+	}
+
+	function handlePointerMove(e) {
+		if (!isDragging) return;
+		puzzleElements[activePuzzleElement].isDragging = isDragging;
+
+		e.preventDefault();
+
+		// Получаем координаты для мыши и тач-событий
+		const clientX = e.clientX || (e.touches && e.touches[0].clientX);
+		const clientY = e.clientY || (e.touches && e.touches[0].clientY);
+
+		// Вычисляем новые координаты
+		const newX = clientX - startX;
+		const newY = clientY - startY;
+
+		// Обновляем позицию кнопки
+		currentX = newX;
+		currentY = newY;
+
+		buttonElement.style.left = `${currentX}px`;
+		buttonElement.style.top = `${currentY}px`;
+	}
+
+	function handlePointerUp() {
+		isDragging = false;
+		puzzleElements[activePuzzleElement].isDragging = isDragging;
+
+		// Получаем координаты puzzle контейнера
+		const puzzleRect = puzzleContainer.getBoundingClientRect();
+		const buttonRect = buttonElement.getBoundingClientRect();
+
+		// Проверяем, находится ли кнопка в пределах puzzle контейнера
+		const isInsidePuzzleZone =
+			buttonRect.left >= puzzleRect.left &&
+			buttonRect.right <= puzzleRect.right &&
+			buttonRect.top >= puzzleRect.top &&
+			buttonRect.bottom <= puzzleRect.bottom;
+
+		if (isInsidePuzzleZone) {
+			// Элемент попал в разрешенную зону - можно оставить его там
+			console.log('Элемент размещен в puzzle зоне!');
+			// Можно добавить дополнительную логику для "защелкивания"
+			const placedPieceId = puzzleElements[activePuzzleElement].id;
+			// handlePieceDrop(0, placedPieceId); // Assuming dropZoneId 0 for now
+			// Удаляем элемент из списка puzzleElements
+			puzzleElements.splice(activePuzzleElement, 1);
+			// Если список не пуст, корректируем activePuzzleElement
+			if (puzzleElements.length > 0) {
+				activePuzzleElement = Math.min(activePuzzleElement, puzzleElements.length - 1);
+				selectedPuzzleElement = puzzleElements[activePuzzleElement].imageSrc;
+			} else {
+				// Все элементы размещены, можно скрыть кнопку или показать сообщение
+				selectedPuzzleElement = ''; // Или другой индикатор
+			}
+			returnToOriginalPosition();
+		} else {
+			// Возвращаем элемент в исходное положение
+			returnToOriginalPosition();
+		}
+
+		// Удаляем все обработчики событий
+		document.removeEventListener('mousemove', handlePointerMove);
+		document.removeEventListener('mouseup', handlePointerUp);
+		document.removeEventListener('touchmove', handlePointerMove);
+		document.removeEventListener('touchend', handlePointerUp);
+	}
+
+	function returnToOriginalPosition() {
+		// Возвращаем элемент в исходную позицию с анимацией
+		buttonElement.style.transition = 'all 0.4s ease-in-out';
+		buttonElement.style.left = `${originalPosition.x}px`;
+		buttonElement.style.top = `${originalPosition.y}px`;
+
+		// После завершения анимации возвращаем элемент в поток документа
+		setTimeout(() => {
+			buttonElement.style.position = '';
+			buttonElement.style.left = '';
+			buttonElement.style.top = '';
+			buttonElement.style.margin = '';
+			buttonElement.style.zIndex = '';
+			buttonElement.style.transition = '';
+			isPositioned = false;
+
+			// Обновляем сохраненную позицию
+			const rect = buttonElement.getBoundingClientRect();
+			originalPosition = {
+				x: rect.left,
+				y: rect.top
+			};
+		}, 400);
+	}
+
+	function handleDragStart(e: DragEvent, pieceId: number) {
+		console.log('Drag start (e.currentTarget):', e.currentTarget);
+		if (e.dataTransfer && e.currentTarget instanceof HTMLElement) {
+			e.dataTransfer.setData('pieceId', pieceId.toString());
+			e.currentTarget.style.opacity = '0.5';
+		}
+	}
+
+	function handleButtonClick() {
+		if (!isDragging) {
+			console.log('Кнопка нажата!');
+		}
+	}
 </script>
 
-<Content>
-	<ImageContainer>
-		<div
-			class="relative w-full aspect-square rounded-4xl overflow-hidden px-2 pt-10 pb-2 gap-6 bg-secondary layer-shadow flex flex-col justify-center items-center"
-		>
-			<img
-				src="/frame.png"
-				width="440"
-				height="440"
-				class="absolute inset-0 w-full h-full object-fill pointer-events-none z-30"
-				alt=""
-			/>
-			<svg
-				width="100%"
-				height="100%"
-				viewBox="0 0 440 440"
-				fill="none"
-				xmlns="http://www.w3.org/2000/svg"
-				preserveAspectRatio="xMidYMid meet"
-				class="absolute inset-0 w-full h-full rounded-[40px] z-20"
-			>
-				<defs>
-					<filter id="desaturate" color-interpolation-filters="sRGB">
-						<feTurbulence id="turbulence" type="turbulence" numOctaves="4" result="NOISE"
-						></feTurbulence>
-						<feDisplacementMap in="SourceGraphic" in2="NOISE" scale="20"></feDisplacementMap>
-						<feGaussianBlur stdDeviation="4" result="BLUR"></feGaussianBlur>
-						<feColorMatrix type="saturate" values="0" />
-						<animate
-							xlink:href="#turbulence"
-							attributeName="baseFrequency"
-							dur="60s"
-							keyTimes="0;0.5;1"
-							values="0.01 0.02;0.02 0.04;0.01 0.02"
-							repeatCount="indefinite"
-						></animate>
-					</filter>
-					<mask id="puzzleMask">
-						{#each pathes as path}
-							<path d={path.path} id={'mask-' + path.id.toString()} fill="white" />
-						{/each}
-					</mask>
-				</defs>
+<div bind:this={contentCotainer}>
+	<Content>
+		<div bind:this={puzzleContainer}>
+			<ImageContainer>
+				<div class="relative w-full my-4 p-2 h-fit">
+					<img src="/frame.png" class="absolute inset-0 z-10 aspect-square w-full h-full pointer-events-none" alt="" />
+					<PuzzleSvg
+						id="puzzle"
+						imageHref="/pzz-owl/cat-owl.png"
+						class="absolute inset-0 w-full h-full rounded-[40px]"
+						onDrop={handlePieceDrop}
+					></PuzzleSvg>
+					<img src="/pzz-owl/cat-owl.png" class="aspect-square w-full h-full" alt="" />
+				</div>
 
-				{#if imageHref}
-					<image
-						href={imageHref}
-						x="0"
-						y="0"
-						width="440"
-						height="440"
-						style="pointer-events:none"
-						mask="url(#puzzleMask)"
-						filter="url(#desaturate)"
-					/>
-				{/if}
-				<path
-					d="M435.849 222.094C425.629 222.251 414.26 223.525 403.05 224.815C391.145 226.185 379.384 227.58 369.661 227.58C364.794 227.58 360.333 227.232 356.558 226.318C352.795 225.407 349.527 223.887 347.259 221.4C342.538 216.22 343.137 208.156 348.677 197.061C353.898 186.607 352.403 179.308 348.285 174.596C343.999 169.692 336.424 167.052 328.551 167.052C320.677 167.052 313.103 169.692 308.816 174.596C304.698 179.308 303.203 186.607 308.424 197.061C313.961 208.15 314.596 216.207 309.936 221.39C307.695 223.882 304.453 225.405 300.72 226.317C296.975 227.232 292.547 227.58 287.713 227.58C278.057 227.58 266.363 226.185 254.51 224.815C243.343 223.524 232.001 222.25 221.781 222.093C221.623 232.588 220.321 244.162 219.036 255.307C217.657 267.267 216.302 278.7 216.302 288.074C216.302 292.754 216.642 296.817 217.445 300.111C218.251 303.417 219.479 305.765 221.111 307.236C224.178 310 229.869 310.554 240.777 305.093C252.319 299.315 261.518 300.569 267.803 306.076C273.897 311.414 276.756 320.337 276.756 328.961C276.756 337.586 273.897 346.509 267.803 351.847C261.518 357.353 252.319 358.607 240.777 352.829C229.869 347.369 224.178 347.922 221.111 350.687C219.479 352.158 218.251 354.505 217.445 357.811C216.642 361.106 216.302 365.168 216.302 369.849C216.302 379.222 217.657 390.656 219.036 402.616C220.322 413.766 221.624 425.346 221.782 435.845H433.572C434.175 435.845 434.755 435.605 435.182 435.177C435.609 434.75 435.849 434.169 435.849 433.564V222.094ZM110.894 167.052C103.02 167.052 95.4452 169.692 91.1592 174.596C87.041 179.308 85.5459 186.607 90.7668 197.061C96.3043 208.15 96.9386 216.207 92.2792 221.39C90.038 223.883 86.796 225.405 83.0626 226.317C79.3173 227.232 74.8897 227.58 70.0557 227.58C60.3999 227.58 48.7064 226.185 36.8527 224.815C25.6973 223.525 14.367 222.252 4.15591 222.094L4.68614 433.559V433.564C4.68614 434.169 4.92616 434.75 5.35339 435.177C5.78056 435.605 6.35976 435.845 6.96354 435.845H217.63C217.473 425.617 216.201 414.267 214.912 403.092C213.543 391.224 212.151 379.516 212.151 369.849C212.151 365.009 212.498 360.576 213.412 356.826C214.324 353.089 215.843 349.843 218.333 347.599C223.51 342.934 231.559 343.569 242.634 349.114C253.075 354.341 260.364 352.843 265.07 348.72C269.968 344.429 272.605 336.845 272.605 328.961C272.605 321.078 269.968 313.493 265.07 309.202C260.364 305.079 253.075 303.582 242.634 308.809C231.559 314.353 223.51 314.989 218.333 310.323C215.843 308.079 214.323 304.834 213.412 301.096C212.498 297.346 212.151 292.913 212.151 288.074C212.151 278.406 213.543 266.699 214.912 254.83C216.2 243.661 217.471 232.317 217.63 222.094C207.419 222.252 196.089 223.525 184.934 224.815C173.081 226.185 161.387 227.58 151.732 227.58C146.898 227.58 142.47 227.232 138.724 226.317C134.991 225.405 131.749 223.883 129.508 221.39C124.848 216.207 125.483 208.15 131.02 197.061C136.241 186.607 134.746 179.308 130.628 174.596C126.342 169.692 118.767 167.052 110.894 167.052ZM6.96354 4.15486C6.35973 4.15489 5.78054 4.39506 5.35339 4.82272C4.92618 5.25045 4.68614 5.83082 4.68614 6.43598V6.44125L4.15591 217.938C14.6383 218.097 26.1977 219.401 37.329 220.687C49.2746 222.068 60.6938 223.425 70.0557 223.425C74.7304 223.425 78.7878 223.085 82.078 222.281C85.3801 221.474 87.7244 220.244 89.1935 218.61C91.9548 215.539 92.5076 209.84 87.0535 198.919C81.2828 187.363 82.5354 178.153 88.0349 171.86C93.3666 165.76 102.279 162.897 110.894 162.897C119.508 162.897 128.42 165.76 133.752 171.86C139.252 178.153 140.504 187.363 134.733 198.919C129.279 209.84 129.832 215.539 132.593 218.61C134.063 220.244 136.407 221.474 139.709 222.281C142.999 223.085 147.057 223.425 151.732 223.425C161.093 223.425 172.512 222.068 184.458 220.687C195.589 219.401 207.148 218.097 217.63 217.938C217.474 207.706 216.201 196.35 214.912 185.17C213.543 173.302 212.151 161.594 212.151 151.926C212.151 147.087 212.498 142.654 213.412 138.904C214.324 135.166 215.843 131.921 218.333 129.677C223.51 125.011 231.559 125.647 242.634 131.191C253.075 136.418 260.364 134.921 265.07 130.798C269.968 126.507 272.605 118.922 272.605 111.039C272.605 103.155 269.968 95.5709 265.07 91.2796C260.364 87.1567 253.075 85.6594 242.634 90.8864C231.559 96.4307 223.51 97.0663 218.333 92.4007C215.843 90.1567 214.324 86.9112 213.412 83.1735C212.498 79.4238 212.151 74.9909 212.151 70.151C212.151 60.4836 213.543 48.7759 214.912 36.9077C216.201 25.7329 217.473 14.3827 217.63 4.15486H6.96354ZM435.849 6.43598C435.849 5.83086 435.609 5.25047 435.182 4.82272C434.755 4.39504 434.175 4.15491 433.572 4.15486H221.782C221.624 14.6541 220.322 26.2335 219.036 37.384C217.657 49.3442 216.302 60.7775 216.302 70.151C216.302 74.8316 216.642 78.8944 217.445 82.1888C218.251 85.4951 219.479 87.8424 221.111 89.3133C224.178 92.0775 229.869 92.6313 240.777 87.1706C252.319 81.3926 261.518 82.6467 267.803 88.1533C273.897 93.4914 276.756 102.414 276.756 111.039C276.756 119.663 273.897 128.586 267.803 133.924C261.518 139.431 252.319 140.685 240.777 134.907C229.869 129.446 224.178 130 221.111 132.764C219.479 134.235 218.251 136.582 217.445 139.889C216.642 143.183 216.302 147.246 216.302 151.926C216.302 161.3 217.657 172.733 219.036 184.693C220.323 195.849 221.625 207.435 221.782 217.938C232.272 218.094 243.844 219.399 254.986 220.687C266.932 222.068 278.351 223.425 287.713 223.425C292.387 223.425 296.445 223.085 299.735 222.281C303.037 221.474 305.381 220.244 306.85 218.61C309.612 215.539 310.165 209.84 304.71 198.919C298.94 187.363 300.192 178.153 305.692 171.86C311.024 165.76 319.936 162.897 328.551 162.897C337.165 162.897 346.077 165.76 351.409 171.86C356.908 178.153 358.161 187.363 352.39 198.919C346.939 209.834 347.525 215.526 350.326 218.6C351.82 220.239 354.197 221.471 357.534 222.279C360.858 223.085 364.952 223.425 369.661 223.425C379.092 223.425 390.58 222.068 402.576 220.687C413.76 219.4 425.359 218.095 435.849 217.938V6.43598ZM440 433.564C440 435.271 439.323 436.908 438.117 438.115C436.912 439.322 435.277 440 433.572 440H6.96354C5.2584 440 3.62317 439.322 2.41766 438.115C1.21335 436.909 0.536458 435.274 0.535095 433.569L0 220.005L2.06498 220L0 219.995L0.535095 6.43071C0.536464 4.72587 1.21334 3.0909 2.41766 1.88511C3.62319 0.678143 5.25841 2.66083e-05 6.96354 0H433.572C435.277 4.87156e-05 436.912 0.678139 438.117 1.88511C439.323 3.0921 440 4.72925 440 6.43598V433.564Z"
-					fill="#711E02"
-					id="borders"
-				/>
-				{#each pathes as path}
-					<path d={path.path} id={path.id.toString()} fill="white" opacity="0" />
-				{/each}
-			</svg>
-			<img
-				src="/pzz-owl/cat-owl.png"
-				width="440"
-				height="440"
-				alt="Owl"
-				class="absolute inset-0 w-full h-full object-fill pointer-events-none"
-			/>
+				<p class="text-center">
+					<TextStyle3D className={'text-2xl'}>Собери элементы пазла</TextStyle3D>
+				</p>
+			</ImageContainer>
 		</div>
 
-		<p class="text-center">
-			<TextStyle3D className={'text-2xl'}>Собери элементы пазла</TextStyle3D>
-		</p>
-	</ImageContainer>
-
-	<div class="flex justify-between items-center w-full h-full">
-		<RoundButton onclick={() => getPrevPuzzle(activePuzzleElement)}><ArrowLeft /></RoundButton>
-		<!-- Слайдер: только один активный элемент -->
-		<div class="relative w-[150px] h-[150px] flex justify-center items-center">
-			{#each puzzleElements as elem, i (elem.id)}
-				{#if i === activePuzzleElement}
+		<div class="flex justify-between items-center w-full h-full">
+			<RoundButton onclick={() => getPrevPuzzle(activePuzzleElement)}><ArrowLeft /></RoundButton>
+			<div class="flex justify-center items-center w-full grow overflow-hidden">
+				{#key activePuzzleElement}
 					<button
-						id={elem.id.toString()}
-						class="draggable w-full h-full"
-						onmousedown={(e) => startCustomDrag(e, elem.id)}
-						ontouchstart={(e) => startCustomDrag(e, elem.id)}
-						in:fly={{
-							x: prevIndex < activePuzzleElement ? 100 : -100,
-							duration: 300,
-							easing: cubicOut
-						}}
-						out:fly={{
-							x: prevIndex < activePuzzleElement ? -100 : 100,
-							duration: 300,
-							easing: cubicOut
-						}}
+						bind:this={buttonElement}
+						class="draggable-button h-[106px] slide-in-left"
+						class:dragging={isDragging}
+						onmousedown={(e) => handlePointerDown(e)}
+						ontouchstart={(e) => handlePointerDown(e)}
+						onclick={handleButtonClick}
+						ondragstart={(e) => handleDragStart(e, activePuzzleElement)}
+						draggable={true}
 					>
 						<img
-							src={elem.imageSrc}
+							src={selectedPuzzleElement}
 							alt=""
-							class="w-full h-full object-cover drop-shadow-[0_2px_4px_rgba(0,0,0,0.25)]"
+							class="drop-shadow-[0_2px_4px_rgba(0,0,0,0.25)] w-full h-full object-cover"
+							class:desaturate={puzzleElements[activePuzzleElement].isDragging === true}
 						/>
 					</button>
-				{/if}
-			{/each}
+				{/key}
+			</div>
+			<RoundButton onclick={() => getNextPuzzle(activePuzzleElement)}><ArrowRight /></RoundButton>
 		</div>
-		<RoundButton onclick={() => getNextPuzzle(activePuzzleElement)}><ArrowRight /></RoundButton>
-	</div>
-</Content>
+		<!-- <button class="reset-button" onclick={resetPosition}>Сбросить позицию</button> -->
+		<!-- <a class="uppercase text-center" href="/prizes/first">далее</a> -->
+	</Content>
+</div>
+
+<!-- 
+
+				<PuzzleBoard
+					gridSize={puzzleElements.length}
+					pieces={puzzleElements}
+					onDrop={handlePieceDrop}
+				></PuzzleBoard>
+
+-->
 
 <style>
-	@keyframes fadeOutShrink {
-		0% {
-			opacity: 1;
-			transform: scale(1);
-		}
-		100% {
-			opacity: 0;
-			transform: scale(0.8);
-		}
-	}
-
-	.disappear {
-		animation: fadeOutShrink 0.4s ease forwards;
-	}
-
 	.desaturate {
 		filter: saturate(0);
 	}
-	.draggable {
-		/* ОБЯЗАТЕЛЬНО - позволяет позиционировать через left/top */
+	.draggable-button {
+		position: absolute; /* ОБЯЗАТЕЛЬНО - позволяет позиционировать через left/top */
 		touch-action: none; /* Отключает стандартные тач-жесты браузера */
 		cursor: move; /* Показывает, что элемент можно перетаскивать */
 		z-index: 10; /* Гарантирует, что кнопка над другими элементами */
@@ -369,13 +280,13 @@
 		-ms-user-select: none; /* Internet Explorer/Edge */
 		user-select: none; /* Standard syntax */
 	}
-	.dragging {
+	.draggable-button.dragging {
 		/* Добавляем префиксы для transform для лучшей совместимости */
 		-webkit-transform: scale(1.05);
 		-ms-transform: scale(1.05); /* Для IE 9 */
 		transform: scale(1.05);
-		-webkit-filter: drop-shadow(8px 16px 10px rgba(0, 0, 0, 0.3));
 		filter: drop-shadow(8px 16px 10px rgba(0, 0, 0, 0.3));
+		-webkit-filter: drop-shadow(8px 16px 10px rgba(0, 0, 0, 0.3));
 		cursor: grabbing;
 	}
 
@@ -407,10 +318,5 @@
 			transform: translateX(0);
 			opacity: 1;
 		}
-	}
-	path.highlight {
-		stroke: #00f;
-		stroke-width: 2;
-		fill: yellow;
 	}
 </style>
