@@ -43,21 +43,22 @@
 	];
 
 	function handleDrop(e: DragEvent): void {
+		e.preventDefault();
 		console.log('handleDrop event catched on svg');
 		const target = e.target as HTMLElement;
 		console.log('Drop target', target);
-		e.preventDefault();
 		const pieceId = e.dataTransfer?.getData('pieceId');
 		if (pieceId) {
-			onDrop(id, parseInt(pieceId, 10));
+			onDrop(parseInt(pieceId), parseInt(pieceId, 10));
 		}
+		console.log('Dropped data:', pieceId);
 	}
 
 	function handleClick(event: MouseEvent) {
 		const target = event.target as HTMLElement;
-        console.log('placedItems', placedItems);
+		console.log('placedItems', placedItems);
 		if (placedItems === 2) {
-			goto('/prizes/first');
+			goto('/pizes/first');
 		}
 		if (target && target.tagName === 'path' && target.id != 'borders') {
 			placedItems++;

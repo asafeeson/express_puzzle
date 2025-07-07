@@ -5,7 +5,7 @@
 </script>
 
 <div
-	class="h-fit rounded-b-2xl overflow-hidden w-full px-2 pt-10 pb-2 gap-6 bg-secondary layer-shadow flex flex-col justify-center items-center"
+	class="h-full rounded-b-2xl overflow-hidden w-full px-2 pt-10 pb-2 gap-6 bg-secondary layer-shadow flex flex-col justify-center items-center"
 >
 	{@render children()}
 </div>

@@ -3,4 +3,5 @@ export interface PuzzlePieceType {
 	imageSrc: string;
 	isPlaced: boolean;
 	isDragging?: boolean;
+	placeId?: number
 }
