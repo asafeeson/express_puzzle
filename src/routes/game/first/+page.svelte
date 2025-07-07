@@ -303,10 +303,10 @@
 		</p>
 	</ImageContainer>
 
-	<div class="flex justify-between items-center w-full h-full">
+	<div class="grid grid-cols-[auto_1fr_auto] w-full items-center h-[150px] my-auto">
 		<RoundButton onclick={() => getPrevPuzzle(activePuzzleElement)}><ArrowLeft /></RoundButton>
 		<!-- Слайдер: только один активный элемент -->
-		<div class=" w-[150px] h-[150px] flex justify-center items-center">
+		<div class="w-[150px] h-full flex justify-center items-center justify-self-center">
 			{#each puzzleElements as elem, i (elem.id)}
 				{#if i === activePuzzleElement}
 					<button
