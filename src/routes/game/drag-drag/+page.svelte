@@ -232,6 +232,8 @@
 		>
 			<img
 				src="/frame.png"
+				width="440"
+				height="440"
 				class="absolute inset-0 w-full h-full object-fill pointer-events-none z-30"
 				alt=""
 			/>
@@ -290,6 +292,8 @@
 			</svg>
 			<img
 				src="/pzz-owl/cat-owl.png"
+				width="440"
+				height="440"
 				alt="Owl"
 				class="absolute inset-0 w-full h-full object-fill pointer-events-none"
 			/>
