@@ -22,7 +22,9 @@
 	const randomPieceToPlace = allPuzzlePieces[randomIndex];
 
 	// Инициализируем элементы для слайдера, исключая уже размещенный
-	const puzzleElements = $state<PuzzlePieceType[]>(allPuzzlePieces.filter(p => p.id !== randomPieceToPlace.id));
+	const puzzleElements = $state<PuzzlePieceType[]>(
+		allPuzzlePieces.filter((p) => p.id !== randomPieceToPlace.id)
+	);
 
 	let contentCotainer = $state();
 	let activePuzzleElement = $state<number>(0);
@@ -304,7 +306,9 @@
 		</p>
 	</ImageContainer>
 
-	<div class="grid grid-cols-[auto_1fr_auto] w-full items-center justify-items-center h-[150px] my-auto">
+	<div
+		class="grid grid-cols-[auto_1fr_auto] w-full items-center justify-items-center h-[150px] my-auto"
+	>
 		<RoundButton onclick={() => getPrevPuzzle(activePuzzleElement)}><ArrowLeft /></RoundButton>
 		<!-- Слайдер: только один активный элемент -->
 		<div class="flex justify-center items-center">
