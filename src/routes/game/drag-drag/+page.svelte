@@ -8,8 +8,8 @@
 	import TextStyle3D from '$lib/components/TextStyle3D.svelte';
 	import { type PuzzlePieceType } from '$lib/types';
 	import { onMount } from 'svelte';
-	import { quintOut } from 'svelte/easing';
-	import { slide } from 'svelte/transition';
+	import { cubicOut, quintOut } from 'svelte/easing';
+	import { fly, slide } from 'svelte/transition';
 	import type { PageData } from './$types';
 	import puzzlePiecesData from '$lib/data/puzzles.json';
 	import PuzzleSvg from '$lib/components/PuzzleSVG.svelte';
@@ -21,6 +21,7 @@
 
 	let contentCotainer = $state();
 	let activePuzzleElement = $state<number>(0);
+	let prevIndex = $state<number>(0);
 	let selectedDraggable = $state<HTMLElement | null>();
 	let shiftX = $state<number>(0);
 	let shiftY = $state<number>(0);
@@ -28,10 +29,13 @@
 	const placedPieces = new Set<number>();
 
 	function getNextPuzzle(index: number) {
+		prevIndex = activePuzzleElement;
 		const maxLen = puzzleElements.length - 1;
 		activePuzzleElement = index === maxLen ? 0 : index + 1;
+
 	}
 	function getPrevPuzzle(index: number) {
+		prevIndex = activePuzzleElement;
 		activePuzzleElement = index > 0 ? index - 1 : puzzleElements.length - 1;
 	}
 
@@ -298,22 +302,29 @@
 
 	<div class="flex justify-between items-center w-full h-full">
 		<RoundButton onclick={() => getPrevPuzzle(activePuzzleElement)}><ArrowLeft /></RoundButton>
-		<div class="flex grow overflow-x-auto">
-			{#each puzzleElements as elem, i}
-				<button
-					id={elem.id.toString()}
-					class="draggable h-[100px] w-[100px]"
-					onmousedown={(e) => startCustomDrag(e, elem.id)}
-					ontouchstart={(e) => startCustomDrag(e, elem.id)}
-				>
-					<img
-						src={elem.imageSrc}
-						width="100px"
-						height="100px"
-						alt=""
-						class="drop-shadow-[0_2px_4px_rgba(0,0,0,0.25)] w-full h-full object-cover"
-					/>
-				</button>
+		<!-- Слайдер: только один активный элемент -->
+		<div class="relative w-[100px] h-[100px] overflow-hidden flex justify-center items-center">
+			{#each puzzleElements as elem, i (elem.id)}
+				{#if i === activePuzzleElement}
+					<button
+						id={elem.id.toString()}
+						class="draggable absolute w-full h-full"
+						onmousedown={(e) => startCustomDrag(e, elem.id)}
+						ontouchstart={(e) => startCustomDrag(e, elem.id)}
+						in:fly={{ x: prevIndex < activePuzzleElement ? 100 : -100, duration: 300, easing: cubicOut }}
+						out:fly={{
+							x: prevIndex < activePuzzleElement ? -100 : 100,
+							duration: 300,
+							easing: cubicOut
+						}}
+					>
+						<img
+							src={elem.imageSrc}
+							alt=""
+							class="w-full h-full object-cover drop-shadow-[0_2px_4px_rgba(0,0,0,0.25)]"
+						/>
+					</button>
+				{/if}
 			{/each}
 		</div>
 		<RoundButton onclick={() => getNextPuzzle(activePuzzleElement)}><ArrowRight /></RoundButton>
