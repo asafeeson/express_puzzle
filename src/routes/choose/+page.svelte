@@ -1,6 +1,6 @@
 <script lang="ts">
 	import Button from '$lib/components/Button.svelte';
-	import type { PageData } from './$types';
+	import type { PageData } from '../prizes/choose/$types';
 
 	const { data }: { data: PageData } = $props();
 </script>

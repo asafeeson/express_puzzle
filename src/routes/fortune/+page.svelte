@@ -1,7 +1,7 @@
 <script lang="ts">
 	import Button from '$lib/components/Button.svelte';
 	import { fly } from 'svelte/transition';
-	import type { PageData } from './$types';
+	import type { PageData } from '../prizes/fortune/$types';
 	import { quintOut } from 'svelte/easing';
 
 	const { data }: { data: PageData } = $props();

@@ -34,7 +34,7 @@
 			<div
 				in:fly|global={{ delay: 300, duration: 600, x: 0, y: 500, opacity: 0.5, easing: quintOut }}
 			>
-				<Button href="game/first" title="играть">играть</Button>
+				<Button href="games/owl" title="играть">играть</Button>
 			</div>
 		{/if}
 	</div>

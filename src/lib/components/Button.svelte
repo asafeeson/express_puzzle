@@ -19,7 +19,7 @@
 		flex-direction: row;
 		justify-content: center;
 		align-items: center;
-		padding: 20px 70px;
+		padding: 20px 20px;
 		gap: 10px;
 		width: 328px;
 		height: 87px;

@@ -27,7 +27,7 @@
 		</p>
 	</div>
 	<div class="flex justify-between items-center">
-		<Button href="/game/second" title="ИГРАТЬ">ИГРАТЬ</Button>
+		<Button href="/games/che" title="ИГРАТЬ">ИГРАТЬ</Button>
 	</div>
 </Content>
 
