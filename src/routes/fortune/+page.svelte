@@ -1,69 +1,52 @@
 <script lang="ts">
 	import Button from '$lib/components/Button.svelte';
-	import { fly } from 'svelte/transition';
-	import type { PageData } from '../prizes/fortune/$types';
-	import { quintOut } from 'svelte/easing';
+	import Content from '$lib/components/Content.svelte';
+	import ImageContainer from '$lib/components/ImageContainer.svelte';
+	import UserProfileHeader from '$lib/components/UserProfileHeader.svelte';
+	import gsap from 'gsap';
+	import type { PageData } from './$types';
+	import { getRandomInteger } from '$lib/utils';
 
 	const { data }: { data: PageData } = $props();
-	let wheel: HTMLElement;
 	let showPop = $state(false);
+	let wheelElem = $state<HTMLElement>();
+	function spinWheel(e: HTMLElement) {
+		gsap.to(e, {
+			rotate: '+=720',
+			duration: 1.5 * getRandomInteger(1, 3)
+		});
+	}
 </script>
 
-<div class="flex flex-col h-full px-6 gap-6 relative overflow-hidden justify-between items-center">
-	<div
-		class="flex flex-col justify-center items-center bg-secondary rounded-b-4xl gap-6 w-full py-6 h-fit"
-	>
-		<div class="overflow-hidden rounded-full w-[92px] aspect-square gap-4 bg-[#D9D9D9]">
-			<img src="/user_icon.svg" alt="" class="h-full w-auto object-fill" />
-		</div>
-		<div class="flex flex-col gap-2 items-center">
-			<span class="font-extrabold text-2xl">Name user</span>
-			<span class="text-sm">Почта@mail.ru</span>
-			<span class="text-sm">Зарегистрирован дд.мм.гггг</span>
-		</div>
-	</div>
-	<div class="flex flex-col justify-center items-center h-full gap-6">
-		<h1 class="font-black text-2xl">Нажми и крути</h1>
-		<div class="flex w-full justify-center items-center relative">
+<Content className="gap-8">
+	<ImageContainer>
+		<UserProfileHeader />
+	</ImageContainer>
+
+	<div class="relative">
+		<img
+			src="/wheel/arrow.png"
+			alt="spin wheel arrow"
+			class="absolute top-0 left-1/2 -translate-x-1/2 z-20"
+		/>
+		<div class="cursor-pointer" style:width="346px" style:height="346px">
 			<img
-				src="/arrow.png"
+				src="/wheel/red-ball.png"
 				alt=""
-				class="transition-transform duration-700 absolute -top-5 drop-shadow-xl z-1 h-10"
+				srcset=""
+				class="absolute top-1/2 left-1/2 -translate-1/2 z-15"
 			/>
 			<img
-				src="/wheel.png"
-				alt=""
-				class="transition-transform duration-700 h-[250px] w-auto"
-				bind:this={wheel}
+				src="/wheel/inner-circle.png"
+				alt="spin wheel"
+				bind:this={wheelElem}
+				id="wheel"
+				class="absolute top-12 left-12 z-10"
 			/>
+			<img src="/wheel/outer-circle.png" alt="spin wheel" width="346px" height="346px" />
 		</div>
 	</div>
-	<div class="flex justify-between items-end w-full">
-		<button
-			type="button"
-			class="w-full h-16 bg-button grid place-content-center rounded-4xl uppercase font-bold text-2xl cursor-pointer"
-			onclick={() => {
-				wheel.style.transform = 'rotate(360deg)';
-				setTimeout(() => {
-					wheel.style.transform = '';
-				}, 700);
-				showPop = !showPop;
-			}}
-			>КРУТИТЬ
-		</button>
+	<div class="flex justify-between items-center">
+		<Button onClick={() => spinWheel(wheelElem)} title="Крутить">Крутить</Button>
 	</div>
-	{#if showPop}
-		<div
-			class="w-full h-1/2 absolute bottom-0 left-0 px-4 z-2"
-			transition:fly={{ delay: 1400, duration: 400, x: 0, y: 400, opacity: 0.5, easing: quintOut }}
-		>
-			<div
-				class="bg-secondary/90 h-full w-full p-10 rounded-t-2xl justify-between items-center flex flex-col"
-			>
-				<h2 class="font-bold">Вы выиграли</h2>
-				<p>Описания приза</p>
-				<Button href="/kefir" title="забрать приз">забрать приз</Button>
-			</div>
-		</div>
-	{/if}
-</div>
+</Content>

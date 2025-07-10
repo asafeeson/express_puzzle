@@ -3,16 +3,15 @@
 
 	interface Props {
 		children: Snippet;
-		title?: string;
-		onClick: () => void;
-
+		title: string;
+		href: string;
 	}
-	const { children, onClick, title }: Props = $props();
+	const { children, href, title }: Props = $props();
 </script>
 
-<button type="button" onclick={onClick} {title} aria-label={title} class="ddd-button">
+<a {href} {title} aria-label={title} class="ddd-button">
 	{@render children()}
-</button>
+</a>
 
 <style>
 	.ddd-button {

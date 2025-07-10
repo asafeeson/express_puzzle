@@ -4,7 +4,7 @@
 	import ImageContainer from '$lib/components/ImageContainer.svelte';
 	import TextStyle3D from '$lib/components/TextStyle3D.svelte';
 	import Content from '$lib/components/Content.svelte';
-	import Button from '$lib/components/Button.svelte';
+	import Button from '$lib/components/Link.svelte';
 
 	const { data }: { data: PageData } = $props();
 	let showKefirModal = $state<Boolean>(false);

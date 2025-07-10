@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { goto } from '$app/navigation';
 	import ArrowLeft from '$lib/components/ArrowLeft.svelte';
 	import ArrowRight from '$lib/components/ArrowRight.svelte';
 	import Content from '$lib/components/Content.svelte';
@@ -14,8 +15,7 @@
 	import type { Action } from 'svelte/action';
 	import { cubicOut } from 'svelte/easing';
 	import { fly } from 'svelte/transition';
-	import type { PageData } from '../drag-drag/$types';
-	import { goto } from '$app/navigation';
+	import type { PageData } from './$types';
 
 	const { data }: { data: PageData } = $props();
 
@@ -261,25 +261,6 @@
 </Content>
 
 <style>
-	@keyframes fadeOutShrink {
-		0% {
-			opacity: 1;
-			transform: scale(1);
-		}
-		100% {
-			opacity: 0;
-			transform: scale(0.8);
-		}
-	}
-
-	.dragging {
-		filter: saturate(0);
-		box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.5);
-	}
-	.disappear {
-		animation: fadeOutShrink 0.4s ease forwards;
-	}
-
 	.inactive {
 		filter: saturate(0);
 		opacity: 0.5;

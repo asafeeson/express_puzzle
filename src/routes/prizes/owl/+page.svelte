@@ -1,5 +1,5 @@
 <script lang="ts">
-	import Button from '$lib/components/Button.svelte';
+	import Button from '$lib/components/Link.svelte';
 	import Content from '$lib/components/Content.svelte';
 	import ImageContainer from '$lib/components/ImageContainer.svelte';
 	import TextStyle3D from '$lib/components/TextStyle3D.svelte';

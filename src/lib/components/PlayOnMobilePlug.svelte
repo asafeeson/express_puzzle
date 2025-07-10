@@ -1,4 +1,4 @@
-<main class="max-w-xl flex mx-auto h-full w-full flex-col justify-center items-center gap-6">
+<main class="hidden sm:flex max-w-xl mx-auto h-full w-full flex-col justify-center items-center gap-6">
 	<h1>Играй с Телефона</h1>
 	<div class="flex relative">
 		<enhanced:img src="/static/desktop.png" alt="Играй с Телефона, cканируй QR код"></enhanced:img>

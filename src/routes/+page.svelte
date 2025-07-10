@@ -3,7 +3,7 @@
 	import ImageContainer from '$lib/components/ImageContainer.svelte';
 	import TextStyle3D from '$lib/components/TextStyle3D.svelte';
 	import { fly } from 'svelte/transition';
-	import Button from '../lib/components/Button.svelte';
+	import Button from '../lib/components/Link.svelte';
 
 	import type { PageData } from './$types';
 	import { quintOut } from 'svelte/easing';
