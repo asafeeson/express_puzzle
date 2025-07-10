@@ -6,14 +6,19 @@
 	import gsap from 'gsap';
 	import type { PageData } from './$types';
 	import { getRandomInteger } from '$lib/utils';
+	import TextStyle3D from '$lib/components/TextStyle3D.svelte';
+	import Link from '$lib/components/Link.svelte';
 
 	const { data }: { data: PageData } = $props();
-	let showPop = $state(false);
+	let showPop = $state(true);
 	let wheelElem = $state<HTMLElement>();
 	function spinWheel(e: HTMLElement) {
 		gsap.to(e, {
 			rotate: '+=720',
-			duration: 1.5 * getRandomInteger(1, 3)
+			duration: 1.5 * getRandomInteger(1, 3),
+			onComplete: () => {
+				showPop = !showPop;
+			}
 		});
 	}
 </script>
@@ -50,3 +55,22 @@
 		<Button onClick={() => spinWheel(wheelElem)} title="Крутить">Крутить</Button>
 	</div>
 </Content>
+
+{#if showPop}
+	<button
+		class="w-full h-full absolute z-50 flex flex-col justify-end px-4"
+		onclick={() => (showPop = false)}
+	>
+		<aside
+			class="bg-white/90 py-16 px-3 flex flex-col justify-between items-center rounded-t-2xl gap-10"
+		>
+			<div class="flex flex-col gap-10 justify-start items-center">
+				<h1 class="text-center">
+					<TextStyle3D className={'text-4xl'}>Вы выиграли!</TextStyle3D>
+				</h1>
+				<p>Описания приза</p>
+			</div>
+			<Link href="/" title="забрать приз">Забрать приз</Link>
+		</aside>
+	</button>
+{/if}
