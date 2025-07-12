@@ -2,15 +2,16 @@
 	import Button from '$lib/components/Button.svelte';
 	import Content from '$lib/components/Content.svelte';
 	import ImageContainer from '$lib/components/ImageContainer.svelte';
+	import Link from '$lib/components/Link.svelte';
+	import TextStyle3D from '$lib/components/TextStyle3D.svelte';
 	import UserProfileHeader from '$lib/components/UserProfileHeader.svelte';
+	import { getRandomInteger } from '$lib/utils';
 	import gsap from 'gsap';
 	import type { PageData } from './$types';
-	import { getRandomInteger } from '$lib/utils';
-	import TextStyle3D from '$lib/components/TextStyle3D.svelte';
-	import Link from '$lib/components/Link.svelte';
+	import { quintOut } from 'svelte/easing';
+	import { fly } from 'svelte/transition';
 
-	const { data }: { data: PageData } = $props();
-	let showPop = $state(true);
+	let showPop = $state(false);
 	let wheelElem = $state<HTMLElement>();
 	function spinWheel(e: HTMLElement) {
 		gsap.to(e, {
@@ -60,6 +61,7 @@
 	<button
 		class="w-full h-full absolute z-50 flex flex-col justify-end px-4"
 		onclick={() => (showPop = false)}
+		transition:fly="{{delay: 500, duration: 500, y: 500, opacity: 0.5, easing: quintOut}}"
 	>
 		<aside
 			class="bg-white/90 py-16 px-3 flex flex-col justify-between items-center rounded-t-2xl gap-10"
