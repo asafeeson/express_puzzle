@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { goto } from '$app/navigation';
 	import ArrowLeft from '$lib/components/ArrowLeft.svelte';
 	import ArrowRight from '$lib/components/ArrowRight.svelte';
 	import Content from '$lib/components/Content.svelte';
@@ -10,12 +11,9 @@
 	import { type PuzzlePieceType } from '$lib/types';
 	import gsap from 'gsap';
 	import { Draggable } from 'gsap/Draggable';
-	import { onMount } from 'svelte';
 	import type { Action } from 'svelte/action';
 	import { cubicOut } from 'svelte/easing';
 	import { fly } from 'svelte/transition';
-	import type { PageData } from './$types';
-	import { goto } from '$app/navigation';
 
 	const boardPuzzlePieces = puzzlePiecesData.puzzleChePieces;
 	const pathes = PuzzlePathData.puzzle33.path;
@@ -41,6 +39,10 @@
 	}
 
 	const initDraggableOnMount: Action<HTMLElement> = (node) => {
+		setTimeout(() => initDraggable(node), 1000);
+	};
+
+	const initDraggable = (node: HTMLElement) => {
 		gsap.registerPlugin(Draggable);
 
 		const draggable = Draggable.create(node, {
