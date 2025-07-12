@@ -49,7 +49,7 @@
 			inset 0px 4px 4px rgba(0, 0, 0, 0.3),
 			inset 0px -4px 4px rgba(255, 255, 255, 0.35);
 		text-shadow:
-			-1px 1px 1.6px rgba(0, 0, 0, 0.25),http://localhost:5173/game/first
+			-1px 1px 1.6px rgba(0, 0, 0, 0.25),
 			0px 0px 4.5px rgba(0, 0, 0, 0.25);
 	}
 </style>
