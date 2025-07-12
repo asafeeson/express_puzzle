@@ -23,7 +23,7 @@
 })}
 	<a
 		{href}
-		class="w-full flex flex-1/2 flex-col px-3.5 py-8 items-center text-center gap-4 rounded-2xl bg-secondary layer-shadow hover:bg-[#FAC783] hover:z-1"
+		class="w-full flex flex-1/2 flex-col px-3.5 py-8 items-center text-center gap-4 rounded-2xl bg-secondary layer-shadow active:bg-[#FAC783] hover:z-1"
 	>
 		<img src={imgSrc} alt={imgAlt} class="block w-auto h-auto" />
 		<div class="flex flex-col justify-between gap-7 font-medium text-center">
@@ -50,7 +50,7 @@
 })}
 	<a
 		{href}
-		class="w-full h-full flex px-6 py-6 items-center text-center gap-6 rounded-2xl bg-secondary layer-shadow hover:bg-[#FAC783] hover:z-1"
+		class="w-full h-full flex px-6 py-6 items-center text-center gap-6 rounded-2xl bg-secondary layer-shadow active:bg-[#FAC783] hover:z-1"
 	>
 		{#if imgPosition === 'left'}
 			<img src={imgSrc} alt={imgAlt} class="block w-auto h-auto" />
