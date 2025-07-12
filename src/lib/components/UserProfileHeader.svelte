@@ -8,11 +8,13 @@
 	}: { username?: string; email?: string; date?: string } = $props();
 </script>
 
-<div class="flex flex-col justify-center items-center bg-secondary rounded-b-2xl w-fit h-fit gap-3 px-8 py-4 layer-shadow min-w-3xs">
+<div
+	class="flex flex-col justify-center items-center bg-secondary rounded-b-2xl w-fit h-fit gap-3 px-8 py-4 layer-shadow min-w-3xs"
+>
 	<div class="flex flex-col justify-start items-center">
-		<enhanced:img
-			src="/static/avatar.png?h=100&format=webp&quality=100&lossless=true"
-			alt="User Avatar Placeholder Picture"
+		<img
+			src="/avatar.png"
+			alt="User Avatar Placeholder"
 			width="100"
 			height="100"
 		/>
