@@ -58,10 +58,15 @@
 </Content>
 
 {#if showPop}
-	<button
-		class="w-full h-full absolute z-50 flex flex-col justify-end px-4"
+	<div
+		class="w-dvw h-dvh absolute z-50 flex flex-col justify-end px-4"
+		role="button"
+		tabindex="0"
 		onclick={() => (showPop = false)}
-		transition:fly="{{delay: 500, duration: 500, y: 500, opacity: 0.5, easing: quintOut}}"
+		onkeypress={(e) => {
+			if (e.key === 'Escape' || e.key === ' ') showPop = false;
+		}}
+		transition:fly={{ delay: 500, duration: 500, y: 500, opacity: 0.5, easing: quintOut }}
 	>
 		<aside
 			class="bg-white/90 py-16 px-3 flex flex-col justify-between items-center rounded-t-2xl gap-10"
@@ -74,5 +79,5 @@
 			</div>
 			<Link href="/" title="забрать приз">Забрать приз</Link>
 		</aside>
-	</button>
+	</div>
 {/if}
