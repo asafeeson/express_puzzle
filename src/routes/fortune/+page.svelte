@@ -24,34 +24,33 @@
 	}
 </script>
 
-<Content className="gap-8">
+<Content>
 	<UserProfileHeader />
-	<div class="relative">
+	<div class="relative mt-4">
 		<img
 			src="/wheel/arrow.png"
-			alt="spin wheel arrow"
+			alt="Fortune Wheel Arrow"
 			class="absolute top-0 left-1/2 -translate-x-1/2 z-20"
 		/>
-		<div class="cursor-pointer" style:width="346px" style:height="346px">
+		<div class="cursor-pointer" style:width="326px" style:height="326px">
 			<img
 				src="/wheel/red-ball.png"
-				alt=""
-				srcset=""
+				alt="Red Ball"
 				class="absolute top-1/2 left-1/2 -translate-1/2 z-15"
 			/>
 			<img
 				src="/wheel/inner-circle.png"
-				alt="spin wheel"
+				alt="Fortune Wheel"
 				bind:this={wheelElem}
 				id="wheel"
-				class="absolute top-12 left-12 z-10"
+				width="234"
+				height="234"
+				class="absolute top-[45px] left-[46px] z-10 aspect-square"
 			/>
-			<img src="/wheel/outer-circle.png" alt="spin wheel" width="346px" height="346px" />
+			<img src="/wheel/outer-circle.png" alt="spin wheel" width="326" height="326" />
 		</div>
 	</div>
-	<div class="flex justify-between items-center">
-		<Button onClick={() => spinWheel(wheelElem)} title="Крутить">Крутить</Button>
-	</div>
+	<Button onClick={() => spinWheel(wheelElem)} title="Крутить">Крутить</Button>
 </Content>
 
 {#if showPop}
