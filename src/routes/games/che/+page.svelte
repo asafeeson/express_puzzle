@@ -221,7 +221,7 @@
 						data-puzzle-id={elem.id}
 						class="draggable"
 						class:inactive={false}
-						onintroend={(event) => initDraggableOnMount(event.currentTarget)}
+						onintroend={(event) => initDraggable(event.currentTarget)}
 						in:fly={{
 							x: prevIndex < activePuzzleElement ? 100 : -100,
 							duration: 300,
