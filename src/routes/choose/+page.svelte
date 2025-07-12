@@ -8,18 +8,24 @@
 	const { data }: { data: PageData } = $props();
 </script>
 
-{#snippet choosePrize(
-	href: string,
-	imgSrc: string,
-	imgAlt: string,
-	title: string,
-	description: string
-)}
+{#snippet choosePrizeVer({
+	href,
+	imgSrc,
+	imgAlt,
+	title,
+	description
+}: {
+	href: string;
+	imgSrc: string;
+	imgAlt: string;
+	title: string;
+	description: string;
+})}
 	<a
 		{href}
 		class="w-full flex flex-1/2 flex-col px-3.5 py-8 items-center text-center gap-4 rounded-2xl bg-secondary layer-shadow hover:bg-[#FAC783] hover:z-1"
 	>
-		<img src={imgSrc} alt={imgAlt} class="aspect-square block w-auto h-auto" />
+		<img src={imgSrc} alt={imgAlt} class="block w-auto h-auto" />
 		<div class="flex flex-col justify-between gap-7 font-medium text-center">
 			<h2 class="text-lg">{title}</h2>
 			<p class="text-sm">{description}</p>
@@ -27,26 +33,64 @@
 	</a>
 {/snippet}
 
-<Content className="gap-8">
-	<ImageContainer>
-		<UserProfileHeader />
-	</ImageContainer>
-	<TextStyle3D className="text-4xl">Выбор приза</TextStyle3D>
-	<div class="flex gap-0.5 w-full justify-center h-full items-stretch">
-		{@render choosePrize(
-			'/kefir',
-			'/money_icon.png',
-			'деньги хочу',
-			'Забрать приз 100 рублей',
-			'деньги будут зачислены на кошелек аккаунта или сразу переведуться по сбп'
-		)}
-		{@render choosePrize(
-			'/fortune',
-			'/fortune_icon.png',
-			'удачу испытать хочу',
-			'Сыграть в колесо фортуны',
-			'призы и промокоды'
-		)}
+{#snippet choosePrizeHor({
+	href,
+	imgSrc,
+	imgAlt,
+	title,
+	description,
+	imgPosition
+}: {
+	href: string;
+	imgSrc: string;
+	imgAlt: string;
+	title: string;
+	description: string;
+	imgPosition: 'left' | 'right';
+})}
+	<a
+		{href}
+		class="w-full h-full flex px-6 py-6 items-center text-center gap-6 rounded-2xl bg-secondary layer-shadow hover:bg-[#FAC783] hover:z-1"
+	>
+		{#if imgPosition === 'left'}
+			<img src={imgSrc} alt={imgAlt} class="block w-auto h-auto" />
+		{/if}
+		<div
+			class="flex flex-col justify-between gap-1.5 font-medium"
+			class:text-right={imgPosition === 'right'}
+			class:text-left={imgPosition === 'left'}
+		>
+			<h2 class="text-lg font-extrabold">{title}</h2>
+			<p class="text-sm text-gray-500">{description}</p>
+		</div>
+		{#if imgPosition === 'right'}
+			<img src={imgSrc} alt={imgAlt} class="block w-auto h-auto" />
+		{/if}
+	</a>
+{/snippet}
+
+<Content className="gap-8 justify-start">
+	<UserProfileHeader />
+	<div class="flex flex-col gap-4 h-full">
+		<TextStyle3D className="text-4xl">Выбор приза</TextStyle3D>
+		<div class="flex flex-col gap-4 w-full justify-center h-full">
+			{@render choosePrizeHor({
+				href: '/fortune',
+				imgSrc: '/fortune_icon.png',
+				imgAlt: 'удачу испытать хочу',
+				title: 'Сыграть в колесо фортуны',
+				description: 'призы и промокоды',
+				imgPosition: 'left'
+			})}
+			{@render choosePrizeHor({
+				href: '/kefir',
+				imgSrc: '/money_icon.png',
+				imgAlt: 'деньги хочу',
+				title: 'Забрать приз 100 рублей',
+				description: 'деньги будут зачислены на кошелек аккаунта или сразу переведутся по СБП',
+				imgPosition: 'left'
+			})}
+		</div>
 	</div>
 </Content>
 

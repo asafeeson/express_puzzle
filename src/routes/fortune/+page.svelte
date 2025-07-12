@@ -25,10 +25,7 @@
 </script>
 
 <Content className="gap-8">
-	<ImageContainer>
-		<UserProfileHeader />
-	</ImageContainer>
-
+	<UserProfileHeader />
 	<div class="relative">
 		<img
 			src="/wheel/arrow.png"
@@ -59,7 +56,7 @@
 
 {#if showPop}
 	<div
-		class="w-dvw h-dvh absolute z-50 flex flex-col justify-end px-4"
+		class="w-dvw h-dvh fixed bottom-0 right-0 z-50 flex flex-col justify-end px-4"
 		role="button"
 		tabindex="0"
 		onclick={() => (showPop = false)}
