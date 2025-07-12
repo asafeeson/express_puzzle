@@ -17,8 +17,6 @@
 	import { fly } from 'svelte/transition';
 	import type { PageData } from './$types';
 
-	const { data }: { data: PageData } = $props();
-
 	const boardPuzzlePieces = puzzlePiecesData.puzzleOwlPieces;
 	const trayPuzzlePieces = puzzlePiecesData.puzzleOwlPieces;
 	const pathes = PuzzlePathData.puzzle22.path;
@@ -48,8 +46,8 @@
 	}
 
 	const initDraggableOnMount: Action<HTMLElement> = (node) => {
-		setTimeout(() => initDraggable(node), 1000)
-	}
+		setTimeout(() => initDraggable(node), 1000);
+	};
 
 	const initDraggable = (node: HTMLElement) => {
 		gsap.registerPlugin(Draggable);
