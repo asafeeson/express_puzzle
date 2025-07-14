@@ -1,22 +1,21 @@
-# sv
-
-Everything you need to build a Svelte project, powered by [`sv`](https://github.com/sveltejs/cli).
-
-## Creating a project
-
-If you're seeing this, you've probably already done this step. Congrats!
+## Clone repository
 
 ```bash
-# create a new project in the current directory
-npx sv create
+git clone <repository-url>
+cd <project-directory>
+```
 
-# create a new project in my-app
-npx sv create my-app
+## Install dependencies
+
+```bash
+npm install
+# or pnpm install
+# or yarn install
 ```
 
 ## Developing
 
-Once you've created a project and installed dependencies with `npm install` (or `pnpm install` or `yarn`), start a development server:
+Start a development server:
 
 ```bash
 npm run dev
@@ -36,3 +35,9 @@ npm run build
 You can preview the production build with `npm run preview`.
 
 > To deploy your app, you may need to install an [adapter](https://svelte.dev/docs/kit/adapters) for your target environment.
+
+## Deploying
+
+This project is configured to deploy on Vercel using the `@sveltejs/adapter-vercel` adapter.
+
+To deploy the app to other environments, you may need to install a different adapter. For example, to deploy on Node.js, you would use `@sveltejs/adapter-node`. You can find a list of available adapters in the [SvelteKit documentation](https://svelte.dev/docs/kit/adapters).
