@@ -52,7 +52,7 @@
 
 	const initDraggableOnMount: Action<HTMLElement> = (node) => {
 		setTimeout(() => initDraggable(node), initialTimeout);
-		initialTimeout = 200;
+		initialTimeout = 300;
 	};
 
 	const initDraggable = (node: HTMLElement) => {
