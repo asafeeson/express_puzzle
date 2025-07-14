@@ -1,11 +1,10 @@
 <script lang="ts">
 	import Content from '$lib/components/Content.svelte';
-	import ImageContainer from '$lib/components/ImageContainer.svelte';
 	import TextStyle3D from '$lib/components/TextStyle3D.svelte';
 	import UserProfileHeader from '$lib/components/UserProfileHeader.svelte';
 	import type { PageData } from './$types';
 
-	const { data }: { data: PageData } = $props();
+	let useVerticalLayout = $state<boolean>(true);
 </script>
 
 {#snippet choosePrizeVer({
@@ -73,24 +72,43 @@
 	<UserProfileHeader />
 	<div class="flex flex-col gap-4 h-full">
 		<TextStyle3D className="text-4xl">Выбор приза</TextStyle3D>
-		<div class="flex flex-col gap-4 w-full justify-center h-full">
-			{@render choosePrizeHor({
-				href: '/fortune',
-				imgSrc: '/fortune_icon.png',
-				imgAlt: 'удачу испытать хочу',
-				title: 'Сыграть в колесо фортуны',
-				description: 'призы и промокоды',
-				imgPosition: 'left'
-			})}
-			{@render choosePrizeHor({
-				href: '/kefir',
-				imgSrc: '/money_icon.png',
-				imgAlt: 'деньги хочу',
-				title: 'Забрать приз 100 рублей',
-				description: 'деньги будут зачислены на кошелек аккаунта или сразу переведутся по СБП',
-				imgPosition: 'left'
-			})}
-		</div>
+		{#if useVerticalLayout}
+			<div class="flex gap-0.5 w-full justify-center">
+				{@render choosePrizeVer({
+					href: '/fortune',
+					imgSrc: '/fortune_icon.png',
+					imgAlt: 'удачу испытать хочу',
+					title: 'Сыграть в колесо фортуны',
+					description: 'призы и промокоды'
+				})}
+				{@render choosePrizeVer({
+					href: '/kefir',
+					imgSrc: '/money_icon.png',
+					imgAlt: 'деньги хочу',
+					title: 'Забрать приз 100 рублей',
+					description: 'деньги будут зачислены на кошелек аккаунта или сразу переведутся по СБП'
+				})}
+			</div>
+		{:else}
+			<div class="flex flex-col gap-4 w-full justify-center h-full">
+				{@render choosePrizeHor({
+					href: '/fortune',
+					imgSrc: '/fortune_icon.png',
+					imgAlt: 'удачу испытать хочу',
+					title: 'Сыграть в колесо фортуны',
+					description: 'призы и промокоды',
+					imgPosition: 'left'
+				})}
+				{@render choosePrizeHor({
+					href: '/kefir',
+					imgSrc: '/money_icon.png',
+					imgAlt: 'деньги хочу',
+					title: 'Забрать приз 100 рублей',
+					description: 'деньги будут зачислены на кошелек аккаунта или сразу переведутся по СБП',
+					imgPosition: 'left'
+				})}
+			</div>
+		{/if}
 	</div>
 </Content>
 
