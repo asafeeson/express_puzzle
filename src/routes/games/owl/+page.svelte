@@ -15,7 +15,6 @@
 	import type { Action } from 'svelte/action';
 	import { cubicOut } from 'svelte/easing';
 	import { fly } from 'svelte/transition';
-	import type { PageData } from './$types';
 
 	const boardPuzzlePieces = puzzlePiecesData.puzzleOwlPieces;
 	const trayPuzzlePieces = puzzlePiecesData.puzzleOwlPieces;
@@ -25,6 +24,7 @@
 	const randomIndex = Math.floor(Math.random() * boardPuzzlePieces.length);
 	const randomPieceToPlace = boardPuzzlePieces[randomIndex];
 	const placedPieces = new Set<number>();
+	let initialTimeout = 600;
 
 	let puzzleElementsInTray = $state<PuzzlePieceType[]>(
 		trayPuzzlePieces.filter((p) => p.id !== randomPieceToPlace.id)
@@ -46,13 +46,15 @@
 	}
 
 	const initDraggableOnMount: Action<HTMLElement> = (node) => {
-		setTimeout(() => initDraggable(node), 1000);
+		setTimeout(() => initDraggable(node), initialTimeout);
+		initialTimeout = 200;
 	};
 
 	const initDraggable = (node: HTMLElement) => {
 		gsap.registerPlugin(Draggable);
 
 		const draggable = Draggable.create(node, {
+			trigger: node,
 			type: 'x,y',
 			bounds: document.getElementById('content-container'),
 			onDragEnd: function () {
@@ -230,20 +232,18 @@
 					{@const btnId = 'pzl-' + elem.id.toString()}
 					<button
 						bind:this={buttonActivePuzzleElement}
-						use:initDraggableOnMount
+						{@attach initDraggableOnMount}
 						id={btnId}
 						data-puzzle-id={elem.id}
-						class="draggable"
 						class:inactive={false}
-						onintroend={(event) => initDraggable(event.currentTarget)}
 						in:fly={{
 							x: prevIndex < activePuzzleElement ? 100 : -100,
-							duration: 300,
+							duration: 200,
 							easing: cubicOut
 						}}
 						out:fly={{
 							x: prevIndex < activePuzzleElement ? -100 : 100,
-							duration: 300,
+							duration: 200,
 							easing: cubicOut
 						}}
 					>

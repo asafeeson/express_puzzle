@@ -26,28 +26,39 @@
 	let buttonActivePuzzleElement = $state<HTMLElement>();
 	let prevIndex = $state<number>(0);
 	let dropArea = $state<HTMLElement>();
+	let isDragging = $state<boolean>(false);
+	let initialTimeout = 600;
 
 	function getNextPuzzlePiece(index: number) {
+		isDragging = false;
 		prevIndex = activePuzzleElement;
 		const maxLen = puzzleElementsInTray.length - 1;
 		activePuzzleElement = index === maxLen ? 0 : index + 1;
+		initDraggable(buttonActivePuzzleElement);
 	}
 
 	function getPrevPuzzlePiece(index: number) {
+		isDragging = false;
 		prevIndex = activePuzzleElement;
 		activePuzzleElement = index > 0 ? index - 1 : puzzleElementsInTray.length - 1;
+		initDraggable(buttonActivePuzzleElement);
 	}
 
 	const initDraggableOnMount: Action<HTMLElement> = (node) => {
-		setTimeout(() => initDraggable(node), 1000);
+		setTimeout(() => initDraggable(node), initialTimeout);
+		initialTimeout = 200;
 	};
 
 	const initDraggable = (node: HTMLElement) => {
 		gsap.registerPlugin(Draggable);
 
 		const draggable = Draggable.create(node, {
+			trigger: node,
 			type: 'x,y',
 			bounds: document.getElementById('content-container'),
+			onDragStart: function () {
+				isDragging = true;
+			},
 			onDragEnd: function () {
 				console.debug('drag ended');
 				if (placedPieces.size === boardPuzzlePieces.length) {
@@ -99,10 +110,11 @@
 								puzzleElementsInTray = puzzleElementsInTray.filter((p) => p.id !== dragPuzzleId);
 							}
 						});
-						this.kill();
+						// this.kill();
 						placedPieces.add(dragPuzzleId);
 					}
 				}
+				isDragging = false;
 			}
 		})[0];
 		return {
@@ -111,6 +123,12 @@
 			}
 		};
 	};
+
+	function onIntroEndHandle(event) {
+		if (!isDragging) {
+			initDraggable(event.currentTarget);
+		}
+	}
 </script>
 
 <Content>
@@ -216,20 +234,18 @@
 					{@const btnId = 'pzl-' + elem.id.toString()}
 					<button
 						bind:this={buttonActivePuzzleElement}
-						use:initDraggableOnMount
+						{@attach initDraggableOnMount}
 						id={btnId}
 						data-puzzle-id={elem.id}
-						class="draggable"
 						class:inactive={false}
-						onintroend={(event) => initDraggable(event.currentTarget)}
 						in:fly={{
 							x: prevIndex < activePuzzleElement ? 100 : -100,
-							duration: 300,
+							duration: 200,
 							easing: cubicOut
 						}}
 						out:fly={{
 							x: prevIndex < activePuzzleElement ? -100 : 100,
-							duration: 300,
+							duration: 200,
 							easing: cubicOut
 						}}
 					>
