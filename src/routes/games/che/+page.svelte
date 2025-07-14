@@ -20,6 +20,7 @@
 	const imageHref = PuzzlePathData.puzzle33.image;
 	const overlapThreshold = '99%';
 	const placedPieces = new Set<number>();
+	let initialTimeout = 600;
 
 	let puzzleElementsInTray = $state<PuzzlePieceType[]>(puzzlePiecesData.puzzleChePieces);
 	let activePuzzleElement = $state<number>(0);
@@ -27,21 +28,20 @@
 	let prevIndex = $state<number>(0);
 	let dropArea = $state<HTMLElement>();
 	let isDragging = $state<boolean>(false);
-	let initialTimeout = 600;
 
 	function getNextPuzzlePiece(index: number) {
 		isDragging = false;
 		prevIndex = activePuzzleElement;
 		const maxLen = puzzleElementsInTray.length - 1;
 		activePuzzleElement = index === maxLen ? 0 : index + 1;
-		initDraggable(buttonActivePuzzleElement);
+		// initDraggable(buttonActivePuzzleElement);
 	}
 
 	function getPrevPuzzlePiece(index: number) {
 		isDragging = false;
 		prevIndex = activePuzzleElement;
 		activePuzzleElement = index > 0 ? index - 1 : puzzleElementsInTray.length - 1;
-		initDraggable(buttonActivePuzzleElement);
+		// initDraggable(buttonActivePuzzleElement);
 	}
 
 	const initDraggableOnMount: Action<HTMLElement> = (node) => {
@@ -237,7 +237,6 @@
 						{@attach initDraggableOnMount}
 						id={btnId}
 						data-puzzle-id={elem.id}
-						class:inactive={false}
 						in:fly={{
 							x: prevIndex < activePuzzleElement ? 100 : -100,
 							duration: 200,
@@ -265,15 +264,6 @@
 </Content>
 
 <style>
-	.inactive {
-		filter: saturate(0);
-		opacity: 0.5;
-	}
-
-	.inactive .drop-shadow-\[0_2px_4px_rgba\(0\,0\,0\,0\.25\)\] {
-		filter: none !important;
-	}
-
 	.natural-size-image {
 		/* Сохранение натурального размера */
 		width: auto;
