@@ -23,14 +23,13 @@
 			<TextStyle3D className="text-4xl">ПОЗДРАВЛЯЕМ!!!</TextStyle3D>
 		</h1>
 		<p class="text-center text-lg font-medium">
-			Мы убедились что вы не робот. Теперь сыграем по-настоящему!)
+			Мы убедились, что ты не робот.<br />Остался всего один пазл — и приз твой!
 		</p>
 	</div>
 	<div class="flex justify-between items-center">
 		<Button href="/games/che" title="ИГРАТЬ">ИГРАТЬ</Button>
 	</div>
 </Content>
-
 
 <style>
 	.swing-in-top-bck {

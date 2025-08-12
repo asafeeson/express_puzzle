@@ -226,7 +226,7 @@
 		</div>
 
 		<p class="text-center">
-			<TextStyle3D className={'text-2xl'}>Собери элементы пазла</TextStyle3D>
+			<TextStyle3D className={'text-[25px] uppercase'}>СОБЕРИ ПАЗЛ</TextStyle3D>
 		</p>
 	</ImageContainer>
 

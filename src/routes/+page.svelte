@@ -11,6 +11,7 @@
 
 	const { data }: { data: PageData } = $props();
 	let isMounted = $state<boolean>(false);
+	let noMorePrizes = $state<boolean>(false);
 	onMount(() => {
 		isMounted = true;
 	});
@@ -27,14 +28,19 @@
 		</div>
 	</ImageContainer>
 	<h1 class="mx-auto text-center self-center bounce-in-fwd">
-		<TextStyle3D className={'text-4xl'}>СОБЕРИ ЭЛЕМЕНТЫ ПАЗЛА</TextStyle3D>
+		<TextStyle3D className={'text-4xl'}>
+			{noMorePrizes ? 'ПРИЗЫ ЗАКОНЧИЛИСЬ :(' : 'СОБЕРИ ПАЗЛ'}
+		</TextStyle3D>
 	</h1>
+	<p class="text-center text-lg font-medium max-w-3/4">
+		{noMorePrizes ? 'Скоро вернёмся с новыми!' : 'И получи 100 ₽ или один из 150 ценных призов!'}
+	</p>
 	<div class="h-[120px] mx-auto">
 		{#if isMounted}
 			<div
 				in:fly|global={{ delay: 300, duration: 600, x: 0, y: 500, opacity: 0.5, easing: quintOut }}
 			>
-				<Button href="games/owl" title="играть">играть</Button>
+				<Button href="games/owl" title="играть" disabled={noMorePrizes}>играть</Button>
 			</div>
 		{/if}
 	</div>

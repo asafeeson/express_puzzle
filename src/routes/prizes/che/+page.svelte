@@ -22,16 +22,15 @@
 	</ImageContainer>
 	<div class="flex flex-col justify-center items-center gap-4">
 		<h1 class="font-black text-2xl bounce-in-fwd">
-			<TextStyle3D className="text-4xl">ПОЗДРАВЛЯЕМ!!!</TextStyle3D>
+			<TextStyle3D className="text-4xl">ПОЗДРАВЛЯЕМ!</TextStyle3D>
 		</h1>
 		<p class="text-center text-lg font-medium">
-			Вы выиграли! Чтобы забрать приз, войдите или зарегистрируйтесь
+			Ты на финишной прямой!<br />А теперь переходи к выбору приза :)
 		</p>
 	</div>
 	<div class="flex justify-between items-center">
-		<Button href="/choose" title="ИГРАТЬ">Забрать приз</Button>
+		<Button href="/select" title="ИГРАТЬ">Забрать приз</Button>
 	</div>
-	
 
 	{#if showKefirModal}
 		<div
@@ -39,7 +38,7 @@
 			transition:fade={{ delay: 250, duration: 300 }}
 		>
 			<span>В этот момент Пользователь регистрируется на кефире</span>
-			<a href="/prizes/choose" class="bg-main uppercase px-4 py-2 w-full rounded-2xl text-center"
+			<a href="/prizes" class="bg-main uppercase px-4 py-2 w-full rounded-2xl text-center"
 				>далее --&gt;</a
 			>
 		</div>

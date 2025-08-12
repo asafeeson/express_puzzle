@@ -16,6 +16,9 @@
 	--color-button: #f88c41;
 	--color-sweet-orange: #ff6f00;
 	--color-puzzle-bg: #711e02;
+	--color-gray-B1: #B1B1B1;
+
+	--breakpoint-xs: 375px;
 }
 @layer {
 	body {

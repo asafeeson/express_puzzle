@@ -5,11 +5,19 @@
 		children: Snippet;
 		title: string;
 		href: string;
+		disabled?: boolean;
 	}
-	const { children, href, title }: Props = $props();
+	const { children, href, title, disabled = false, ...restProps }: Props = $props();
 </script>
 
-<a {href} {title} aria-label={title} class="ddd-button">
+<a
+	{href}
+	{title}
+	aria-label={title}
+	class="ddd-button"
+	aria-disabled={disabled}
+	{...restProps}
+>
 	{@render children()}
 </a>
 
@@ -41,15 +49,21 @@
 		text-shadow:
 			-1px 1px 1.6px rgba(0, 0, 0, 0.25),
 			1px 2px 4.5px rgba(0, 0, 0, 0.25);
+		&:active,
+		&:hover {
+			box-shadow:
+				0px 4px 15px rgba(0, 0, 0, 0.15),
+				inset 0px -4px 4px rgba(0, 0, 0, 0.3),
+				inset 0px 4px 4px rgba(255, 255, 255, 0.35);
+			text-shadow:
+				-1px 1px 1.6px rgba(0, 0, 0, 0.25),
+				0px 0px 4.5px rgba(0, 0, 0, 0.25);
+		}
 	}
-	.ddd-button:active,
-	.ddd-button:hover {
-		box-shadow:
-			0px 4px 15px rgba(0, 0, 0, 0.15),
-			inset 0px 4px 4px rgba(0, 0, 0, 0.3),
-			inset 0px -4px 4px rgba(255, 255, 255, 0.35);
-		text-shadow:
-			-1px 1px 1.6px rgba(0, 0, 0, 0.25),
-			0px 0px 4.5px rgba(0, 0, 0, 0.25);
+
+	.ddd-button[aria-disabled='true'] {
+		cursor: not-allowed;
+		background: #b1b1b1;
+		pointer-events: none;
 	}
 </style>
