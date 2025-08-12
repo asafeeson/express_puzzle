@@ -13,6 +13,7 @@
 
 	let showPop = $state(false);
 	let wheelElem = $state<HTMLElement>();
+	let arrowElem = $state<HTMLElement>();
 	function spinWheel(e: HTMLElement) {
 		gsap.to(e, {
 			rotate: '+=720',
@@ -22,15 +23,30 @@
 			}
 		});
 	}
+	let currentSlide = $state<{ url: string; title: string }>({ url: '', title: 'Заглушка' });
+
+	$effect(() => {
+		gsap.to(arrowElem, {
+			y: 10,
+			duration: 0.7,
+			ease: "sine.inOut",
+			repeat: -1,
+			yoyo: true
+		});
+	});
+
 </script>
 
 <Content>
-	<SliderWithPartners />
+	<div class:opacity-0={showPop} class="transition-opacity duration-500 w-full">
+		<SliderWithPartners bind:currentSlide />
+	</div>
 	<div class="relative mt-4">
 		<img
 			src="/wheel/arrow.png"
 			alt="Fortune Wheel Arrow"
-			class="absolute top-0 left-1/2 -translate-x-1/2 z-20"
+			class="absolute -top-7 left-1/2 -translate-x-1/2 z-20"
+			bind:this={arrowElem}
 		/>
 		<div class="cursor-pointer" style:width="326px" style:height="326px">
 			<img
@@ -65,13 +81,14 @@
 		transition:fly={{ delay: 500, duration: 500, y: 500, opacity: 0.5, easing: quintOut }}
 	>
 		<aside
-			class="bg-white/90 py-16 px-3 flex flex-col justify-between items-center rounded-t-2xl gap-10"
+			class="bg-white/90 py-16 px-3 flex flex-col justify-between items-center rounded-t-2xl gap-10 h-3/4"
 		>
 			<div class="flex flex-col gap-10 justify-start items-center">
 				<h1 class="text-center">
-					<TextStyle3D className={'text-4xl'}>Вы выиграли!</TextStyle3D>
+					<TextStyle3D className={'text-4xl'}>Ваш приз:</TextStyle3D>
 				</h1>
-				<p>Описания приза</p>
+				<img src={currentSlide.url} alt={currentSlide.title} srcset="" />
+				<p>Промокод:128746<br />на блаблабла</p>
 			</div>
 			<Link href="/" title="забрать приз">Забрать приз</Link>
 		</aside>
