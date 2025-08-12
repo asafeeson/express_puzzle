@@ -1,15 +1,15 @@
 <script lang="ts">
 	import Button from '$lib/components/Button.svelte';
 	import Content from '$lib/components/Content.svelte';
-	import ImageContainer from '$lib/components/ImageContainer.svelte';
 	import Link from '$lib/components/Link.svelte';
 	import TextStyle3D from '$lib/components/TextStyle3D.svelte';
 	import UserProfileHeader from '$lib/components/UserProfileHeader.svelte';
 	import { getRandomInteger } from '$lib/utils';
 	import gsap from 'gsap';
-	import type { PageData } from './$types';
 	import { quintOut } from 'svelte/easing';
 	import { fly } from 'svelte/transition';
+	import slidesData from '$lib/data/prizesSliderData';
+	import SliderWithPartners from '$lib/components/SliderWithPartners.svelte';
 
 	let showPop = $state(false);
 	let wheelElem = $state<HTMLElement>();
@@ -25,7 +25,7 @@
 </script>
 
 <Content>
-	<UserProfileHeader />
+	<SliderWithPartners />
 	<div class="relative mt-4">
 		<img
 			src="/wheel/arrow.png"

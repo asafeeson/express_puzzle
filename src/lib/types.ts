@@ -5,3 +5,8 @@ export interface PuzzlePieceType {
 	isDragging?: boolean;
 	placeId?: number
 }
+
+export interface SlideItem {
+	url: string;
+	title: string;
+}
