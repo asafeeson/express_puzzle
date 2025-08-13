@@ -33,7 +33,6 @@
 	$effect(() => {
 		if (!arrowElem) return;
 		const tween = gsap.to(arrowElem, {
-			// x: 0, // не трогаем X, чтобы не сбивать -translate-x-1/2
 			y: 10,
 			duration: 0.7,
 			ease: 'sine.inOut',
