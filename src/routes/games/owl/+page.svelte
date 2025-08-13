@@ -235,36 +235,38 @@
 	>
 		<RoundButton onclick={() => getPrevPuzzlePiece(activePuzzleElement)}><ArrowLeft /></RoundButton>
 
-		<div class="relative flex justify-center items-center w-full h-full">
-			{#each puzzleElementsInTray as elem, i (elem.id)}
-				{#if i === activePuzzleElement}
-					{@const btnId = 'pzl-' + elem.id.toString()}
-					<button
-						bind:this={buttonActivePuzzleElement}
-						{@attach initDraggableOnMount}
-						id={btnId}
-						data-puzzle-id={elem.id}
-						in:fly={{
-							x: prevIndex < activePuzzleElement ? 100 : -100,
-							duration: 200,
-							easing: cubicOut
-						}}
-						out:fly={{
-							x: prevIndex < activePuzzleElement ? -100 : 100,
-							duration: 200,
-							easing: cubicOut
-						}}
-					>
-						<img
-							src={elem.imageSrc}
-							alt="puzzle"
-							class="natural-size-image drop-shadow-[0_2px_4px_rgba(0,0,0,0.25)] pointer-events-none"
+		{#key puzzleElementsInTray}
+			<div class="relative flex justify-center items-center w-full h-full">
+				{#each puzzleElementsInTray as elem, i (elem.id)}
+					{#if i === activePuzzleElement}
+						{@const btnId = 'pzl-' + elem.id.toString()}
+						<button
+							bind:this={buttonActivePuzzleElement}
+							{@attach initDraggableOnMount}
+							id={btnId}
 							data-puzzle-id={elem.id}
-						/>
-					</button>
-				{/if}
-			{/each}
-		</div>
+							in:fly={{
+								x: prevIndex < activePuzzleElement ? 100 : -100,
+								duration: 200,
+								easing: cubicOut
+							}}
+							out:fly={{
+								x: prevIndex < activePuzzleElement ? -100 : 100,
+								duration: 200,
+								easing: cubicOut
+							}}
+						>
+							<img
+								src={elem.imageSrc}
+								alt="puzzle"
+								class="natural-size-image drop-shadow-[0_2px_4px_rgba(0,0,0,0.25)] pointer-events-none"
+								data-puzzle-id={elem.id}
+							/>
+						</button>
+					{/if}
+				{/each}
+			</div>
+		{/key}
 		<RoundButton onclick={() => getNextPuzzlePiece(activePuzzleElement)}><ArrowRight /></RoundButton
 		>
 	</div>
