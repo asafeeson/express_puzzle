@@ -31,13 +31,16 @@
 	}
 
 	$effect(() => {
-		gsap.to(arrowElem, {
+		if (!arrowElem) return;
+		const tween = gsap.to(arrowElem, {
+			// x: 0, // не трогаем X, чтобы не сбивать -translate-x-1/2
 			y: 10,
 			duration: 0.7,
 			ease: 'sine.inOut',
 			repeat: -1,
 			yoyo: true
 		});
+		return () => tween.kill();
 	});
 </script>
 
@@ -49,14 +52,15 @@
 		<img
 			src="/wheel/arrow.png"
 			alt="Fortune Wheel Arrow"
+			width="56px"
 			class="absolute -top-7 left-1/2 -translate-x-1/2 z-20"
 			bind:this={arrowElem}
 		/>
-		<div class="cursor-pointer" style:width="326px" style:height="326px">
+		<div class="relative cursor-pointer" style:width="326px" style:height="326px">
 			<img
 				src="/wheel/red-ball.png"
 				alt="Red Ball"
-				class="absolute top-1/2 left-1/2 -translate-1/2 z-15"
+				class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-15"
 			/>
 			<img
 				src="/wheel/inner-circle.png"
