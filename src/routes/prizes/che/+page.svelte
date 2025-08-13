@@ -29,7 +29,7 @@
 		</p>
 	</div>
 	<div class="flex justify-between items-center">
-		<Button href="/select" title="ИГРАТЬ">Забрать приз</Button>
+		<Button href="/prizes" title="ИГРАТЬ">Забрать приз</Button>
 	</div>
 
 	{#if showKefirModal}

@@ -1,15 +1,10 @@
 <script lang="ts">
-	import { fade } from 'svelte/transition';
-	import type { PageData } from './$types';
-	import ImageContainer from '$lib/components/ImageContainer.svelte';
-	import TextStyle3D from '$lib/components/TextStyle3D.svelte';
-	import Content from '$lib/components/Content.svelte';
-	import Button from '$lib/components/Link.svelte';
 	import BigFortuneWheel from '$lib/assets/big_fortune_wheel_image.png';
 	import BigMoneyImage from '$lib/assets/big_money_image.png';
-
-	const { data }: { data: PageData } = $props();
-	let showKefirModal = $state<Boolean>(false);
+	import Content from '$lib/components/Content.svelte';
+	import Button from '$lib/components/Link.svelte';
+	import TextStyle3D from '$lib/components/TextStyle3D.svelte';
+	import type { PageData } from './$types';
 
 	const prizesData = [
 		{
