@@ -9,13 +9,3 @@
 >
 	{@render children()}
 </div>
-
-<style>
-	@layer components {
-		.layer-shadow {
-			box-shadow:
-				-9px 7px 4.9px rgba(0, 0, 0, 0.05),
-				inset -2px -3px 1.2px rgba(255, 255, 255, 0.25);
-		}
-	}
-</style>

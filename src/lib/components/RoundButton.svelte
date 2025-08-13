@@ -1,10 +1,10 @@
 <script lang="ts">
 	import type { Snippet } from 'svelte';
 
-	let { children, ...rest }: { flipY?: boolean; children: Snippet } = $props();
+	let { children, onClick, ...rest }: { flipY?: boolean; onClick: () => void, children: Snippet } = $props();
 </script>
 
-<button class="rnd-button" {...rest}>
+<button class="rnd-button" {...rest} onclick={onClick}>
 	{@render children()}
 </button>
 

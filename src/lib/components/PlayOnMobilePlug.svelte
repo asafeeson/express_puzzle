@@ -1,10 +1,14 @@
+<script lang="ts">
+  import desktopPlugWebM from '$lib/assets/desktop-plug.webm';
+</script>
+
 <main
 	class="hidden sm:flex max-w-xl mx-auto h-full w-full flex-col justify-center items-center gap-6"
 >
 	<h1>Играй с Телефона</h1>
 	<div class="flex relative">
 		<video autoplay loop muted playsinline>
-			<source src="/desktop-plug.webm" type="video/webm" />
+			<source src={desktopPlugWebM} type="video/webm" />
 			Ваш браузер не поддерживает видео.
 		</video>
 		<!-- <enhanced:img src="/static/desktop.png" alt="Играй с Телефона, cканируй QR код"></enhanced:img> -->

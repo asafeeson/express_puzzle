@@ -1,7 +1,7 @@
 <script lang="ts">
-	import { onMount } from 'svelte';
-	import { getRandomInteger } from '$lib/utils';
 	import { goto } from '$app/navigation';
+	import { getRandomInteger } from '$lib/utils';
+	import { onMount } from 'svelte';
 
 	interface Props {
 		width?: string;
@@ -9,6 +9,7 @@
 		id?: string;
 		svgEl?: any;
 		imageHref?: string;
+		class?: string;
 		onDrop: (id: number, pieceId: number) => void;
 	}
 	let {
@@ -18,6 +19,7 @@
 		svgEl = $bindable(),
 		imageHref = '',
 		onDrop,
+		class: className,
 		...rest
 	}: Props = $props();
 
@@ -92,6 +94,7 @@
 	onclick={handleClick}
 	ondragover={handleDragOver}
 	ondrop={handleDrop}
+	class={className}
 >
 	<defs>
 		<filter id="desaturate" color-interpolation-filters="sRGB">

@@ -22,7 +22,7 @@
 </script>
 
 <div class="flex justify-between items-center w-full h-28">
-	<RoundButton onclick={() => getPrevPuzzle(activePuzzleElement)}><ArrowLeft /></RoundButton>
+	<RoundButton onClick={() => getPrevPuzzle(activePuzzleElement)}><ArrowLeft /></RoundButton>
 	<div class="flex justify-center items-center w-full grow">
 		{#key activePuzzleElement}
 			<button
@@ -42,7 +42,7 @@
 			</button>
 		{/key}
 	</div>
-	<RoundButton onclick={() => getNextPuzzle(activePuzzleElement)}><ArrowRight /></RoundButton>
+	<RoundButton onClick={() => getNextPuzzle(activePuzzleElement)}><ArrowRight /></RoundButton>
 </div>
 
 <button class="reset-button" onclick={resetPosition}>Сбросить позицию</button>

@@ -1,10 +1,9 @@
 <script lang="ts">
+	import fortuneIconPNG from '$lib/assets/fortune-icon.png';
+	import moneyIconPNG from '$lib/assets/money-icon.png';
 	import Content from '$lib/components/Content.svelte';
 	import TextStyle3D from '$lib/components/TextStyle3D.svelte';
 	import UserProfileHeader from '$lib/components/UserProfileHeader.svelte';
-	import type { PageData } from './$types';
-
-	let useVerticalLayout = $state<boolean>(true);
 </script>
 
 {#snippet choosePrizeVer({
@@ -43,7 +42,7 @@
 		<div class="flex gap-0.5 w-full justify-center">
 			{@render choosePrizeVer({
 				href: '/fortune',
-				imgSrc: '/fortune_icon.png',
+				imgSrc: fortuneIconPNG,
 				imgAlt: 'Сыграть в колесо фортуны',
 				title: 'Сыграть в колесо фортуны',
 				description:
@@ -51,7 +50,7 @@
 			})}
 			{@render choosePrizeVer({
 				href: '/kefir',
-				imgSrc: '/money_icon.png',
+				imgSrc: moneyIconPNG,
 				imgAlt: 'Забрать приз 100 рублей',
 				title: 'Забрать приз 100 рублей',
 				description: 'Деньги будут зачислены на кошелёк аккаунта или сразу переведены по СБП.'
@@ -59,13 +58,3 @@
 		</div>
 	</div>
 </Content>
-
-<style>
-	@layer components {
-		.layer-shadow {
-			box-shadow:
-				-9px 7px 4.9px rgba(0, 0, 0, 0.05),
-				inset -2px -3px 1.2px rgba(255, 255, 255, 0.25);
-		}
-	}
-</style>

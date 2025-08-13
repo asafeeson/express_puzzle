@@ -14,6 +14,7 @@
 	import type { Action } from 'svelte/action';
 	import { cubicOut } from 'svelte/easing';
 	import { fly } from 'svelte/transition';
+	import framePNG from '$lib/assets/frame.png';
 
 	const boardPuzzlePieces = puzzlePiecesData.puzzleChePieces;
 	const pathes = PuzzlePathData.puzzle33.path;
@@ -87,8 +88,8 @@
 				const dropTarget = document.elementFromPoint(clientX, clientY) as HTMLElement;
 				draggedEl.style.visibility = 'visible';
 
-				const dragPuzzleId: number = parseInt(draggedEl.dataset.puzzleId);
-				const dropTargetPuzzleId: number = parseInt(dropTarget.dataset.puzzleId);
+				const dragPuzzleId: number = parseInt(draggedEl.dataset.puzzleId || '0');
+				const dropTargetPuzzleId: number = parseInt(dropTarget.dataset.puzzleId || '0');
 				console.log('piece:', dragPuzzleId, 'target:', dropTargetPuzzleId);
 
 				if (dropArea && this.hitTest(dropArea, overlapThreshold)) {
@@ -124,11 +125,6 @@
 		};
 	};
 
-	function onIntroEndHandle(event) {
-		if (!isDragging) {
-			initDraggable(event.currentTarget);
-		}
-	}
 </script>
 
 <Content>
@@ -138,7 +134,7 @@
 			bind:this={dropArea}
 		>
 			<img
-				src="/frame.png"
+				src={framePNG}
 				width="440"
 				height="440"
 				class="absolute inset-0 w-full h-full object-fill pointer-events-none z-30"
@@ -226,7 +222,7 @@
 	<div
 		class="grid grid-cols-[auto_1fr_auto] w-full items-center justify-items-center h-[150px] my-auto"
 	>
-		<RoundButton onclick={() => getPrevPuzzlePiece(activePuzzleElement)}><ArrowLeft /></RoundButton>
+		<RoundButton onClick={() => getPrevPuzzlePiece(activePuzzleElement)}><ArrowLeft /></RoundButton>
 
 		<div class="flex justify-center items-center w-full h-full">
 			{#key puzzleElementsInTray}
@@ -260,7 +256,7 @@
 				{/each}
 			{/key}
 		</div>
-		<RoundButton onclick={() => getNextPuzzlePiece(activePuzzleElement)}><ArrowRight /></RoundButton
+		<RoundButton onClick={() => getNextPuzzlePiece(activePuzzleElement)}><ArrowRight /></RoundButton
 		>
 	</div>
 </Content>
