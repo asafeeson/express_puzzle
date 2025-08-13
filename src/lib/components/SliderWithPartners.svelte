@@ -5,9 +5,11 @@
 
 	interface Props {
 		currentSlide?: { url: string; title: string };
+		autoPlay?: boolean;
 	}
 
-	let { currentSlide = $bindable() }: Props = $props();
+	let { autoPlay = $bindable() }: Props = $props();
+	let currentSlide = $state<{ url: string; title: string }>({ url: '', title: 'Заглушка' });
 </script>
 
 <div class="flex flex-col rounded-b-2xl gap-3 layer-shadow overflow-hidden w-full">

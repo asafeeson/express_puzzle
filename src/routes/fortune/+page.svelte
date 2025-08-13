@@ -2,14 +2,13 @@
 	import Button from '$lib/components/Button.svelte';
 	import Content from '$lib/components/Content.svelte';
 	import Link from '$lib/components/Link.svelte';
+	import SliderWithPartners from '$lib/components/SliderWithPartners.svelte';
 	import TextStyle3D from '$lib/components/TextStyle3D.svelte';
-	import UserProfileHeader from '$lib/components/UserProfileHeader.svelte';
+	import slidesData from '$lib/data/prizesSliderData';
 	import { getRandomInteger } from '$lib/utils';
 	import gsap from 'gsap';
 	import { quintOut } from 'svelte/easing';
 	import { fly } from 'svelte/transition';
-	import slidesData from '$lib/data/prizesSliderData';
-	import SliderWithPartners from '$lib/components/SliderWithPartners.svelte';
 
 	let showPop = $state(false);
 	let wheelElem = $state<HTMLElement>();
@@ -22,24 +21,29 @@
 				showPop = !showPop;
 			}
 		});
+		getRandomSlide();
 	}
 	let currentSlide = $state<{ url: string; title: string }>({ url: '', title: 'Заглушка' });
+
+	function getRandomSlide() {
+		const randomIndex = getRandomInteger(0, slidesData.length - 1);
+		currentSlide = slidesData[randomIndex];
+	}
 
 	$effect(() => {
 		gsap.to(arrowElem, {
 			y: 10,
 			duration: 0.7,
-			ease: "sine.inOut",
+			ease: 'sine.inOut',
 			repeat: -1,
 			yoyo: true
 		});
 	});
-
 </script>
 
 <Content>
 	<div class:opacity-0={showPop} class="transition-opacity duration-500 w-full">
-		<SliderWithPartners bind:currentSlide />
+		<SliderWithPartners autoPlay={!showPop} />
 	</div>
 	<div class="relative mt-4">
 		<img
