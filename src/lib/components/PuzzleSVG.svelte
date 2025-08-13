@@ -50,7 +50,7 @@
 		const target = e.target as HTMLElement;
 		console.log('Drop target', target);
 		const pieceId = e.dataTransfer?.getData('pieceId');
-		if (pieceId) {
+		if (pieceId && onDrop) {
 			onDrop(parseInt(pieceId), parseInt(pieceId, 10));
 		}
 		console.log('Dropped data:', pieceId);

@@ -7,7 +7,6 @@
 	import RoundButton from '$lib/components/RoundButton.svelte';
 	import TextStyle3D from '$lib/components/TextStyle3D.svelte';
 	import { PuzzlePathData } from '$lib/data/puzzlePathData';
-	import puzzlePiecesData from '$lib/data/puzzles.json';
 	import { type PuzzlePieceType } from '$lib/types';
 	import gsap from 'gsap';
 	import { Draggable } from 'gsap/Draggable';
@@ -16,9 +15,11 @@
 	import { cubicOut } from 'svelte/easing';
 	import { fly } from 'svelte/transition';
 	import framePNG from '$lib/assets/frame.png';
+	import { puzzleOwlPieces } from '$lib/data/puzzles';
 
-	const boardPuzzlePieces = puzzlePiecesData.puzzleOwlPieces;
-	const trayPuzzlePieces = puzzlePiecesData.puzzleOwlPieces;
+
+	const boardPuzzlePieces = puzzleOwlPieces;
+	const trayPuzzlePieces = puzzleOwlPieces;
 	const pathes = PuzzlePathData.puzzle22.path;
 	const imageHref = PuzzlePathData.puzzle22.image;
 	const overlapThreshold = '99%';

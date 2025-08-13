@@ -1,6 +1,9 @@
+import catOwlPNG from '$lib/assets/puzzles/owl/owl.png'
+import chePNG from '$lib/assets/puzzles/che/che.png'
+
 export const PuzzlePathData = {
 	puzzle22: {
-		image: '/pzz-owl/cat-owl.png',
+		image: catOwlPNG,
 		path: [
 			{
 				id: 0,
@@ -22,7 +25,7 @@ export const PuzzlePathData = {
 	},
 
 	puzzle33: {
-		image: '/pzz-che/che.png',
+		image: {chePNG},
 		path: [
 			{
 				id: 0,

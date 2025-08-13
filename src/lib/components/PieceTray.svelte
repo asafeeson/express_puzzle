@@ -4,6 +4,9 @@
 	import type { PuzzlePieceType } from '$lib/types';
 	import RoundButton from './RoundButton.svelte';
 	import ArrowLeft from './ArrowLeft.svelte';
+	import ArrowRight from './ArrowRight.svelte';
+	import { quintOut } from 'svelte/easing';
+	import { slide } from 'svelte/transition';
 
 	interface Props {
 		pieces: PuzzlePieceType[];
@@ -11,14 +14,21 @@
 
 	let { pieces }: Props = $props();
 	const puzzleElements: PuzzlePieceType[] = [
-		{ id: 1, imageSrc: '/pzz-owl/1.png' },
-		{ id: 2, imageSrc: '/pzz-owl/2.png' },
-		{ id: 3, imageSrc: '/pzz-owl/3.png' },
-		{ id: 4, imageSrc: '/pzz-owl/4.png' }
+		{ id: 1, imageSrc: '/pzz-owl/1.png', isPlaced: false },
+		{ id: 2, imageSrc: '/pzz-owl/2.png', isPlaced: false },
+		{ id: 3, imageSrc: '/pzz-owl/3.png', isPlaced: false },
+		{ id: 4, imageSrc: '/pzz-owl/4.png', isPlaced: false }
 	];
 	let activePuzzleElement = $state<number>(0);
 	let selectedPuzzleElement = $derived<string>(puzzleElements[activePuzzleElement].imageSrc);
 	let buttonElement = $state<HTMLButtonElement>();
+	let isDragging = $state<boolean>(false);
+
+	function getPrevPuzzle(id: number) {}
+	function getNextPuzzle(id: number) {}
+	function handlePointerDown(id: number) {}
+	function handleButtonClick(id: number) {}
+	function resetPosition() {}
 </script>
 
 <div class="flex justify-between items-center w-full h-28">
@@ -29,9 +39,9 @@
 				bind:this={buttonElement}
 				class="draggable-button"
 				class:dragging={isDragging}
-				onmousedown={handlePointerDown}
-				ontouchstart={handlePointerDown}
-				onclick={handleButtonClick}
+				onmousedown={() => handlePointerDown}
+				ontouchstart={() => handlePointerDown}
+				onclick={() => handleButtonClick}
 			>
 				<img
 					src={selectedPuzzleElement}

@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
+	import framePNG from '$lib/assets/frame.png';
 	import ArrowLeft from '$lib/components/ArrowLeft.svelte';
 	import ArrowRight from '$lib/components/ArrowRight.svelte';
 	import Content from '$lib/components/Content.svelte';
@@ -7,23 +8,22 @@
 	import RoundButton from '$lib/components/RoundButton.svelte';
 	import TextStyle3D from '$lib/components/TextStyle3D.svelte';
 	import { PuzzlePathData } from '$lib/data/puzzlePathData';
-	import puzzlePiecesData from '$lib/data/puzzles.json';
+	import { puzzleChePieces } from '$lib/data/puzzles';
 	import { type PuzzlePieceType } from '$lib/types';
 	import gsap from 'gsap';
 	import { Draggable } from 'gsap/Draggable';
 	import type { Action } from 'svelte/action';
 	import { cubicOut } from 'svelte/easing';
 	import { fly } from 'svelte/transition';
-	import framePNG from '$lib/assets/frame.png';
 
-	const boardPuzzlePieces = puzzlePiecesData.puzzleChePieces;
+	const boardPuzzlePieces = puzzleChePieces;
 	const pathes = PuzzlePathData.puzzle33.path;
 	const imageHref = PuzzlePathData.puzzle33.image;
 	const overlapThreshold = '99%';
-	const placedPieces = new Set<number>();
 	let initialTimeout = 600;
-
-	let puzzleElementsInTray = $state<PuzzlePieceType[]>(puzzlePiecesData.puzzleChePieces);
+	const placedPieces = new Set<number>();
+	
+	let puzzleElementsInTray = $state<PuzzlePieceType[]>(puzzleChePieces);
 	let activePuzzleElement = $state<number>(0);
 	let buttonActivePuzzleElement = $state<HTMLElement>();
 	let prevIndex = $state<number>(0);
@@ -124,7 +124,6 @@
 			}
 		};
 	};
-
 </script>
 
 <Content>
