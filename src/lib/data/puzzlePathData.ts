@@ -25,7 +25,7 @@ export const PuzzlePathData = {
 	},
 
 	puzzle33: {
-		image: {chePNG},
+		image: chePNG,
 		path: [
 			{
 				id: 0,
