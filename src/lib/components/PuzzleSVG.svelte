@@ -10,7 +10,7 @@
 		svgEl?: any;
 		imageHref?: string;
 		class?: string;
-		onDrop: (id: number, pieceId: number) => void;
+		onDrop?: (id: number, pieceId: number) => void;
 	}
 	let {
 		width = '440',

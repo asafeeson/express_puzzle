@@ -1,4 +1,8 @@
 <script lang="ts">
+	import wheelArrowPNG from '$lib/assets/wheel/arrow.png';
+	import wheelInnerCirclePNG from '$lib/assets/wheel/inner-circle.png';
+	import wheelOuterCirclePNG from '$lib/assets/wheel/outer-circle.png';
+	import redBallPNG from '$lib/assets/wheel/red-ball.png';
 	import Button from '$lib/components/Button.svelte';
 	import Content from '$lib/components/Content.svelte';
 	import Link from '$lib/components/Link.svelte';
@@ -13,7 +17,8 @@
 	let showPop = $state(false);
 	let wheelElem = $state<HTMLElement>();
 	let arrowElem = $state<HTMLElement>();
-	function spinWheel(e: HTMLElement) {
+	function spinWheel(e: HTMLElement | undefined) {
+		if (!e) return;
 		gsap.to(e, {
 			rotate: '+=720',
 			duration: 1.5 * getRandomInteger(1, 3),
@@ -49,7 +54,7 @@
 	</div>
 	<div class="relative mt-4">
 		<img
-			src="/wheel/arrow.png"
+			src={wheelArrowPNG}
 			alt="Fortune Wheel Arrow"
 			width="56px"
 			class="absolute -top-7 left-1/2 -translate-x-1/2 z-20"
@@ -57,12 +62,12 @@
 		/>
 		<div class="relative cursor-pointer" style:width="326px" style:height="326px">
 			<img
-				src="/wheel/red-ball.png"
+				src={redBallPNG}
 				alt="Red Ball"
 				class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-15"
 			/>
 			<img
-				src="/wheel/inner-circle.png"
+				src={wheelInnerCirclePNG}
 				alt="Fortune Wheel"
 				bind:this={wheelElem}
 				id="wheel"
@@ -70,7 +75,7 @@
 				height="234"
 				class="absolute top-[45px] left-[46px] z-10 aspect-square"
 			/>
-			<img src="/wheel/outer-circle.png" alt="spin wheel" width="326" height="326" />
+			<img src={wheelOuterCirclePNG} alt="spin wheel" width="326" height="326" />
 		</div>
 	</div>
 	<Button onClick={() => spinWheel(wheelElem)} title="Крутить">Крутить</Button>
